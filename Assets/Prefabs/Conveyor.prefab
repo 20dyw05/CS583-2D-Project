@@ -49,6 +49,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Conveyor
   facing: 1
+  displayName: Conveyor
+  price: 5
   speed: 2
   effector: {fileID: 6227079531153130083}
   arrow: {fileID: 3711347476435547318}

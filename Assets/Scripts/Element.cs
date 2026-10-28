@@ -8,12 +8,12 @@ public class Element : MonoBehaviour
     GridManager grid;
 
     SpriteRenderer sr;
-    Color baseColor;
+    Color originalColor;
     float flash;
 
     void Awake() {
         sr = GetComponent<SpriteRenderer>();
-        baseColor = sr.color;
+        originalColor = sr.color;
     }
 
     // How many times each tag has been stamped on this Element.
@@ -48,20 +48,18 @@ public class Element : MonoBehaviour
         }
     }
 
+    // The colour to show: the tint of any colouring tag, otherwise the original colour.
+    Color BaseColor() {
+        foreach (ElementTag tag in tags.Keys)
+        {
+            if (tag.tintsElement) return tag.tint;
+        }
+        return originalColor;
+    }
+
     // Briefly lighten when passing through upgrade
     public void Flash() {
         flash = 1f;
-    }
-
-    // Permanent color change
-    public void SetTint(Color tint) {
-        baseColor = tint;
-    }
-
-    // Colour shows value: pale blue when cheap, gold when valuable.
-    public void Refresh() {
-        float t = Mathf.Clamp01(Mathf.Log10((float)Value + 1f) / 2f);
-        sr.color = Color.Lerp(new Color(0.45f, 0.75f, 1f), new Color(1f, 0.85f, 0.2f), t);
     }
 
     // Called once when the Element is created.
@@ -79,7 +77,7 @@ public class Element : MonoBehaviour
         }
 
         flash = Mathf.MoveTowards(flash, 0f, Time.deltaTime * 4f);
-        sr.color = Color.Lerp(baseColor, Color.white, flash * 0.6f);
+        sr.color = Color.Lerp(BaseColor(), Color.white, flash * 0.6f);
     }
 
     public void Dissolve() {

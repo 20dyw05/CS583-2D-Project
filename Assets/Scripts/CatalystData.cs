@@ -27,7 +27,4 @@ public class CatalystData : ScriptableObject
     [Tooltip("Clear every tag (the Resetter).")]
     public bool removesAllTags = false;
 
-    [Header("Optional: permanently recolour the Element")]
-    public bool tintsElement = false;
-    public Color tint = Color.white;
 }

@@ -36,8 +36,5 @@ public class Catalyst : Conveyor {
         element.AddTag(data.addsTag);
 
         element.Flash();
-        if(data.tintsElement) {
-            element.SetTint(data.tint);
-        }
     }
 }

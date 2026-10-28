@@ -107,6 +107,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Condenser
   facing: 1
+  displayName: Condenser
+  price: 25
   elementPrefab: {fileID: 8729650998300104851, guid: 7f12e792c20ea6343bb52d576b68a90c, type: 3}
   elementValue: 1
   interval: 1

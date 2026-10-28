@@ -16,8 +16,8 @@ MonoBehaviour:
   effects:
   - {fileID: 11400000, guid: 071582c3f0b813a47b347162e9e8101c, type: 2}
   valueCap: 0
-  addsTag: {fileID: 0}
-  tagLimit: 0
+  addsTag: {fileID: 11400000, guid: 1ade5ab0658765a42adbb4e9684e51fc, type: 2}
+  tagLimit: 1
   blockedBy: []
   removesTags: []
   removesAllTags: 0

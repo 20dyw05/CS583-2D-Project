@@ -1,11 +1,15 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.EventSystems;
 
 public class PlacementController : MonoBehaviour
 {
     [SerializeField] GridManager grid;
     [SerializeField] Camera cam;
     [SerializeField] PlacedItem[] palette; // key 1 = first item, key 2 = second, ...
+    [SerializeField, Range(0f, 1f)] float refundRate = 0.5f;
+
+    public PlacedItem[] Palette => palette;
 
     int selected = 0;
     Direction facing = Direction.Right;
@@ -47,19 +51,39 @@ public class PlacementController : MonoBehaviour
 
         UpdateGhost(cell);
 
-        if (mouse.leftButton.wasPressedThisFrame)
-        {
-            grid.Place(palette[selected], cell, facing);
+        // ignore ui clicks
+        bool overUI = EventSystem.current != null && EventSystem.current.IsPointerOverGameObject();
+
+        if (mouse.leftButton.wasPressedThisFrame && !overUI) {
+            TryPlace(cell);
         }
 
-        if (mouse.rightButton.wasPressedThisFrame)
-        {
-            grid.Remove(cell);
+        if (mouse.rightButton.wasPressedThisFrame && !overUI) {
+            TrySell(cell);
         }
     }
 
+    void TryPlace(Vector2Int cell) {
+        PlacedItem prefab = palette[selected];
+
+        // If board says no or can't afford
+        if(!grid.CanPlace(cell)) return;
+        if(!ManaManager.Instance.TrySpend(prefab.Price)) return;
+        grid.Place(prefab, cell, facing);
+    }
+
+    void TrySell(Vector2Int cell) {
+        PlacedItem item = grid.GetItem(cell);
+
+        if(item == null) return;
+
+        double refund = item.Price * refundRate;
+        ManaManager.Instance.Add(refund);
+        grid.Remove(cell);
+    }
+
     // Switch to a different item and rebuild the ghost.
-    void Select(int index)
+    public void Select(int index)
     {
         if (index >= palette.Length) return;
         selected = index;
@@ -94,7 +118,8 @@ public class PlacementController : MonoBehaviour
 
         ghost.transform.position = grid.GridToWorld(cell);
 
-        Color tint = grid.CanPlace(cell)
+        bool affordable = ManaManager.Instance.Mana >= palette[selected].Price;
+        Color tint = grid.CanPlace(cell) && affordable
             ? new Color(1f, 1f, 1f, 0.5f)      // allowed: see-through
             : new Color(1f, 0.3f, 0.3f, 0.5f); // not allowed: see-through red
 

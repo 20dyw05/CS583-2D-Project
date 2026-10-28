@@ -82,7 +82,7 @@ SpriteRenderer:
   m_SortingOrder: 1
   m_MaskInteraction: 0
   m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
-  m_Color: {r: 1, g: 0.44968545, b: 0.77310073, a: 0.3529412}
+  m_Color: {r: 0.9811321, g: 0.65677595, b: 0, a: 0.3529412}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -106,7 +106,7 @@ GameObject:
   - component: {fileID: 2348009528218639675}
   - component: {fileID: -2168184963109089449}
   m_Layer: 0
-  m_Name: Adder
+  m_Name: Igniter
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -207,10 +207,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Catalyst
   facing: 1
+  displayName: Igniter
+  price: 350
   speed: 2
   effector: {fileID: 6227079531153130083}
   arrow: {fileID: 3711347476435547318}
-  data: {fileID: 11400000, guid: 92f47a450c03125438b8072948f9f3ac, type: 2}
+  data: {fileID: 11400000, guid: 1963eb8e6d163254ab42f1b2c7e1f648, type: 2}
 --- !u!61 &-2168184963109089449
 BoxCollider2D:
   m_ObjectHideFlags: 0

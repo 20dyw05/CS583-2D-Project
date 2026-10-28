@@ -108,6 +108,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Transmutator
   facing: 1
+  displayName: Transmutator
+  price: 20
 --- !u!61 &8992849187130447
 BoxCollider2D:
   m_ObjectHideFlags: 0
