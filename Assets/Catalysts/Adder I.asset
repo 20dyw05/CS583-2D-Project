@@ -13,9 +13,13 @@ MonoBehaviour:
   m_Name: Adder I
   m_EditorClassIdentifier: Assembly-CSharp::CatalystData
   displayName: Adder I
-  effect: 0
-  amount: 1
+  effects:
+  - {fileID: 11400000, guid: 8c5ac91ff4382a94c81c5b3fd3c32bcb, type: 2}
   valueCap: 20
-  useLimit: 0
+  addsTag: {fileID: 0}
+  tagLimit: 0
+  blockedBy: []
+  removesTags: []
+  removesAllTags: 0
   tintsElement: 0
   tint: {r: 1, g: 1, b: 1, a: 1}

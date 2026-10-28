@@ -31,6 +31,7 @@ public class PlacementController : MonoBehaviour
         if (kb.digit3Key.wasPressedThisFrame) Select(2);
         if (kb.digit4Key.wasPressedThisFrame) Select(3);
         if (kb.digit5Key.wasPressedThisFrame) Select(4);
+        if (kb.digit6Key.wasPressedThisFrame) Select(5);
 
         // Flip Left / Right with R.
         if (kb.rKey.wasPressedThisFrame)

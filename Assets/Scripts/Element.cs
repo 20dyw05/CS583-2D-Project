@@ -7,9 +7,6 @@ public class Element : MonoBehaviour
 
     GridManager grid;
 
-    // How many times each Catalyst has been used on this Element.
-    readonly Dictionary<CatalystData, int> uses = new Dictionary<CatalystData, int>();
-
     SpriteRenderer sr;
     Color baseColor;
     float flash;
@@ -19,6 +16,37 @@ public class Element : MonoBehaviour
         baseColor = sr.color;
     }
 
+    // How many times each tag has been stamped on this Element.
+    readonly Dictionary<ElementTag, int> tags = new Dictionary<ElementTag, int>();
+
+    public int TagCount(ElementTag tag) =>
+        tag != null && tags.TryGetValue(tag, out int count) ? count : 0;
+
+    public bool HasTag(ElementTag tag) => TagCount(tag) > 0;
+
+    public void AddTag(ElementTag tag) {
+        if (tag == null) return; // Catalysts without a tag add nothing
+        tags[tag] = TagCount(tag) + 1;
+    }
+
+    public void RemoveTag(ElementTag tag) {
+        if (tag != null) tags.Remove(tag);
+    }
+
+    // Remove every tag except permanent ones.
+    public void ClearTags()
+    {
+        List<ElementTag> removable = new List<ElementTag>();
+        foreach (ElementTag tag in tags.Keys)
+        {
+            if (!tag.permanent) removable.Add(tag);
+        }
+
+        foreach (ElementTag tag in removable)
+        {
+            tags.Remove(tag);
+        }
+    }
 
     // Briefly lighten when passing through upgrade
     public void Flash() {
@@ -28,13 +56,6 @@ public class Element : MonoBehaviour
     // Permanent color change
     public void SetTint(Color tint) {
         baseColor = tint;
-    }
-
-    public int UsesOf(CatalystData data) =>
-        uses.TryGetValue(data, out int count) ? count : 0;
-
-    public void RecordUse(CatalystData data) {
-        uses[data] = UsesOf(data) + 1;
     }
 
     // Colour shows value: pale blue when cheap, gold when valuable.

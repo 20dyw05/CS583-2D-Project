@@ -13,9 +13,13 @@ MonoBehaviour:
   m_Name: Doubler
   m_EditorClassIdentifier: Assembly-CSharp::CatalystData
   displayName: Doubler
-  effect: 1
-  amount: 2
+  effects:
+  - {fileID: 11400000, guid: 071582c3f0b813a47b347162e9e8101c, type: 2}
   valueCap: 0
-  useLimit: 1
+  addsTag: {fileID: 0}
+  tagLimit: 0
+  blockedBy: []
+  removesTags: []
+  removesAllTags: 0
   tintsElement: 0
   tint: {r: 1, g: 1, b: 1, a: 1}
