@@ -65,6 +65,16 @@ public class GridManager : MonoBehaviour
         items.Remove(cell);                // 3. forget the tile
     }
 
+    // Remove every placed item from the board.
+    public void ClearAll()
+    {
+        foreach(PlacedItem item in items.Values) {
+            Destroy(item.gameObject);
+        } 
+
+        items.Clear();
+    }
+
     // Editor-only drawing: gray outline for every tile, green fill for unlocked ones.
     void OnDrawGizmos()
     {

@@ -12,7 +12,7 @@ public class ManaManager : MonoBehaviour
 
     void Awake() {
         Instance = this;
-        Mana = 5000;
+        Mana = startingMana;
     }
 
     void Start()
@@ -46,5 +46,13 @@ public class ManaManager : MonoBehaviour
             return true;
         }
 
+    }
+
+    // Back to the starting amount (used by Rebirth).
+    public void ResetToStart()
+    {
+        // Set Mana to startingMana, then update the text.
+        Mana = startingMana;
+        Refresh();
     }
 }
