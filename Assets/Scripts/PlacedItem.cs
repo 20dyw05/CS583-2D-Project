@@ -7,7 +7,10 @@ public abstract class PlacedItem : MonoBehaviour
     [Header("Shop")]
     [SerializeField] string displayName = "Item";
     [SerializeField] double price = 10;
+    [Tooltip("Can this be bought in the shop? Rebirth rewards can't.")]
+    [SerializeField] bool buyable = true;
 
+    public bool Buyable => buyable;
     public string DisplayName => displayName;
     public double Price => price;
     // The prefab this item was created from. Set by the grid when placed.

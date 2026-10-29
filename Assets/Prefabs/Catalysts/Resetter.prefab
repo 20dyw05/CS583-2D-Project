@@ -209,6 +209,7 @@ MonoBehaviour:
   facing: 1
   displayName: Resetter
   price: 400
+  buyable: 0
   speed: 2
   effector: {fileID: 6227079531153130083}
   arrow: {fileID: 3711347476435547318}
