@@ -3,13 +3,15 @@ using UnityEngine;
 public abstract class PlacedItem : MonoBehaviour
 {
     [SerializeField] Direction facing = Direction.Right;
-    
+
     [Header("Shop")]
     [SerializeField] string displayName = "Item";
     [SerializeField] double price = 10;
 
     public string DisplayName => displayName;
     public double Price => price;
+    // The prefab this item was created from. Set by the grid when placed.
+    public PlacedItem SourcePrefab { get; set; }
 
     public Vector2Int Cell { get; private set; }
     public Direction Facing => facing;

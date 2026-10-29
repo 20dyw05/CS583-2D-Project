@@ -803,7 +803,6 @@ MonoBehaviour:
   - {fileID: 2348009528218639675, guid: cac2e6c43cf8e364dac5c962071e4c22, type: 3}
   - {fileID: 2348009528218639675, guid: a1d0dde63a7434248a179e2628b9577e, type: 3}
   - {fileID: 2348009528218639675, guid: 5b9564edb7bd8a24f910bfe559914211, type: 3}
-  refundRate: 1
 --- !u!4 &795620053
 Transform:
   m_ObjectHideFlags: 0
@@ -862,6 +861,57 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -5.69043, y: 1.73651, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &835609791
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 835609793}
+  - component: {fileID: 835609792}
+  m_Layer: 0
+  m_Name: Inventory
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &835609792
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 835609791}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56bf721db65deb040a23e3283ba0378e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Inventory
+  startingItems:
+  - item: {fileID: -2033114474398948756, guid: fbe9192e9ce9ceb4ab19805a08cfbddf, type: 3}
+    count: 1
+  - item: {fileID: 4349537515072592418, guid: f8c178482b044ca4c8c8617e74114480, type: 3}
+    count: 1
+  - item: {fileID: 3164886944824992632, guid: d8f4ecd522488f34da2597ff9442e98d, type: 3}
+    count: 10
+--- !u!4 &835609793
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 835609791}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 1.65622, y: 0.48073, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1392,7 +1442,7 @@ GameObject:
   - component: {fileID: 1906209665}
   - component: {fileID: 1906209666}
   m_Layer: 5
-  m_Name: ShopPanel
+  m_Name: Hotbar
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1452,9 +1502,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 1906209663}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 04d24f90402882146a77fd3c398c51f2, type: 3}
+  m_Script: {fileID: 11500000, guid: c77326cb3f9c5ca4a929802c844816f4, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::ShopPanel
+  m_EditorClassIdentifier: Assembly-CSharp::Hotbar
   placement: {fileID: 795620052}
   buttonPrefab: {fileID: 6089115765108270812, guid: 51ba91fdb9ae5414da649d0d201edc42, type: 3}
 --- !u!1660057539 &9223372036854775807
@@ -1471,3 +1521,4 @@ SceneRoots:
   - {fileID: 795620053}
   - {fileID: 866138459}
   - {fileID: 1594474234}
+  - {fileID: 835609793}

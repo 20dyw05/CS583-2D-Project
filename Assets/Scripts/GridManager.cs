@@ -52,6 +52,7 @@ public class GridManager : MonoBehaviour
 
         PlacedItem item = Instantiate(prefab, transform);
         item.Init(this, cell, facing);
+        item.SourcePrefab = prefab;
         items[cell] = item;
         return item;
     }

@@ -1,26 +1,41 @@
+using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.InputSystem;
 using UnityEngine.EventSystems;
+using UnityEngine.InputSystem;
 
 public class PlacementController : MonoBehaviour
 {
     [SerializeField] GridManager grid;
     [SerializeField] Camera cam;
-    [SerializeField] PlacedItem[] palette; // key 1 = first item, key 2 = second, ...
-    [SerializeField, Range(0f, 1f)] float refundRate = 0.5f;
+    [Tooltip("Every item in the game, in the order the hotbar shows them.")]
+    [SerializeField] PlacedItem[] palette;
 
-    public PlacedItem[] Palette => palette;
-
-    int selected = 0;
+    PlacedItem selectedItem;
     Direction facing = Direction.Right;
 
     PlacedItem ghost;
     SpriteRenderer[] ghostRenderers;
     Color[] ghostColors;
 
+    public PlacedItem[] Palette => palette;
+
+    // The items you own at least one of, in palette order.
+    public List<PlacedItem> HotbarItems
+    {
+        get
+        {
+            List<PlacedItem> list = new List<PlacedItem>();
+            foreach (PlacedItem item in palette)
+            {
+                if (Inventory.Instance.Count(item) > 0) list.Add(item);
+            }
+            return list;
+        }
+    }
+
     void Start()
     {
-        Select(0);
+        SelectSlot(0);
     }
 
     void Update()
@@ -29,13 +44,15 @@ public class PlacementController : MonoBehaviour
         Mouse mouse = Mouse.current;
         if (kb == null || mouse == null) return;
 
-        // Pick an item with the number keys.
-        if (kb.digit1Key.wasPressedThisFrame) Select(0);
-        if (kb.digit2Key.wasPressedThisFrame) Select(1);
-        if (kb.digit3Key.wasPressedThisFrame) Select(2);
-        if (kb.digit4Key.wasPressedThisFrame) Select(3);
-        if (kb.digit5Key.wasPressedThisFrame) Select(4);
-        if (kb.digit6Key.wasPressedThisFrame) Select(5);
+        // Number keys pick a hotbar slot.
+        if (kb.digit1Key.wasPressedThisFrame) SelectSlot(0);
+        if (kb.digit2Key.wasPressedThisFrame) SelectSlot(1);
+        if (kb.digit3Key.wasPressedThisFrame) SelectSlot(2);
+        if (kb.digit4Key.wasPressedThisFrame) SelectSlot(3);
+        if (kb.digit5Key.wasPressedThisFrame) SelectSlot(4);
+        if (kb.digit6Key.wasPressedThisFrame) SelectSlot(5);
+
+        if (ghost == null) return; // nothing selected yet
 
         // Flip Left / Right with R.
         if (kb.rKey.wasPressedThisFrame)
@@ -51,52 +68,51 @@ public class PlacementController : MonoBehaviour
 
         UpdateGhost(cell);
 
-        // ignore ui clicks
+        // Ignore clicks on buttons and other UI.
         bool overUI = EventSystem.current != null && EventSystem.current.IsPointerOverGameObject();
 
-        if (mouse.leftButton.wasPressedThisFrame && !overUI) {
-            TryPlace(cell);
-        }
-
-        if (mouse.rightButton.wasPressedThisFrame && !overUI) {
-            TrySell(cell);
-        }
+        if (mouse.leftButton.wasPressedThisFrame && !overUI) TryPlace(cell);
+        if (mouse.rightButton.wasPressedThisFrame && !overUI) TryPickUp(cell);
     }
 
-    void TryPlace(Vector2Int cell) {
-        PlacedItem prefab = palette[selected];
-
-        // If board says no or can't afford
-        if(!grid.CanPlace(cell)) return;
-        if(!ManaManager.Instance.TrySpend(prefab.Price)) return;
-        grid.Place(prefab, cell, facing);
+    void TryPlace(Vector2Int cell)
+    {
+        if (!grid.CanPlace(cell)) return;                          // board says no
+        if (!Inventory.Instance.TryTake(selectedItem)) return;     // none left
+        grid.Place(selectedItem, cell, facing);
     }
 
-    void TrySell(Vector2Int cell) {
+    void TryPickUp(Vector2Int cell)
+    {
         PlacedItem item = grid.GetItem(cell);
+        if(item == null) {
+            return;
+        }
 
-        if(item == null) return;
-
-        double refund = item.Price * refundRate;
-        ManaManager.Instance.Add(refund);
+        Inventory.Instance.Add(item.SourcePrefab);
         grid.Remove(cell);
     }
 
-    // Switch to a different item and rebuild the ghost.
-    public void Select(int index)
+    // Select whatever is in this hotbar slot, if anything.
+    void SelectSlot(int slot)
     {
-        if (index >= palette.Length) return;
-        selected = index;
+        List<PlacedItem> items = HotbarItems;
+        if (slot < items.Count) Select(items[slot]);
+    }
+
+    // Switch to a different item and rebuild the ghost.
+    public void Select(PlacedItem item)
+    {
+        selectedItem = item;
 
         if (ghost != null) Destroy(ghost.gameObject);
 
-        ghost = Instantiate(palette[selected]);
+        ghost = Instantiate(item);
         ghost.enabled = false; // its script must never run
 
-        // Its colliders must never touch Elements.
         foreach (Collider2D col in ghost.GetComponentsInChildren<Collider2D>())
         {
-            col.enabled = false;
+            col.enabled = false; // its colliders must never touch Elements
         }
 
         ghost.PreviewFacing(facing);
@@ -118,8 +134,8 @@ public class PlacementController : MonoBehaviour
 
         ghost.transform.position = grid.GridToWorld(cell);
 
-        bool affordable = ManaManager.Instance.Mana >= palette[selected].Price;
-        Color tint = grid.CanPlace(cell) && affordable
+        bool owned = Inventory.Instance.Count(selectedItem) > 0;
+        Color tint = grid.CanPlace(cell) && owned
             ? new Color(1f, 1f, 1f, 0.5f)      // allowed: see-through
             : new Color(1f, 0.3f, 0.3f, 0.5f); // not allowed: see-through red
 
