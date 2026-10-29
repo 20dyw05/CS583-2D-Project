@@ -57,4 +57,21 @@ public class Inventory : MonoBehaviour
         }
         Changed?.Invoke();
     }
+
+    // Reset to the starting kit, but keep every Rebirth-tier item.
+    public void ResetForRebirth()
+    {
+        Dictionary<PlacedItem, int> kept = new Dictionary<PlacedItem, int>();
+        foreach(KeyValuePair<PlacedItem, int> entry in counts) {
+            if(entry.Key.RebirthTier) {
+                kept[entry.Key] = entry.Value;
+            }    
+        }
+
+        ResetToStart();
+
+        foreach(KeyValuePair<PlacedItem, int> entry in kept) {
+            Add(entry.Key, entry.Value);
+        }
+    }
 }

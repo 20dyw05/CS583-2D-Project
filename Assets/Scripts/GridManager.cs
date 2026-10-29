@@ -13,6 +13,8 @@ public class GridManager : MonoBehaviour
     readonly Dictionary<Vector2Int, PlacedItem> items = new Dictionary<Vector2Int, PlacedItem>();
 
     public float CellSize => cellSize;
+    // Every item currently on the board.
+    public IEnumerable<PlacedItem> AllItems => items.Values;
 
     // Tile coordinates -> the world position of that tile's center.
     public Vector3 GridToWorld(Vector2Int cell)

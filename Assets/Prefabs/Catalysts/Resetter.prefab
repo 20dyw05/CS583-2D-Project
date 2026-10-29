@@ -208,8 +208,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Catalyst
   facing: 1
   displayName: Resetter
-  price: 400
+  price: 0
   buyable: 0
+  rebirthTier: 1
   speed: 2
   effector: {fileID: 6227079531153130083}
   arrow: {fileID: 3711347476435547318}

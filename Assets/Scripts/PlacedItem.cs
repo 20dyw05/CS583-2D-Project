@@ -9,7 +9,10 @@ public abstract class PlacedItem : MonoBehaviour
     [SerializeField] double price = 10;
     [Tooltip("Can this be bought in the shop? Rebirth rewards can't.")]
     [SerializeField] bool buyable = true;
+    [Tooltip("Kept through Rebirth. Rebirth rewards are Rebirth Tier.")]
+    [SerializeField] bool rebirthTier = false;
 
+    public bool RebirthTier => rebirthTier;
     public bool Buyable => buyable;
     public string DisplayName => displayName;
     public double Price => price;

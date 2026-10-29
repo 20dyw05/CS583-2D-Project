@@ -11,6 +11,12 @@ public class RebirthManager : MonoBehaviour
     [SerializeField] TMP_Text buttonText;
     [SerializeField] TMP_Text statusText;
 
+    [Header("Rewards")]
+    [SerializeField] PlacedItem[] rewards;
+    [SerializeField] GameObject choicePanel;
+    [SerializeField] Transform choiceButtons;
+    [SerializeField] Button choiceButtonPrefab;
+
     [Header("Balance")]
     [SerializeField] double firstCost = 5000;
     [Tooltip("Each Rebirth costs this many times more than the last.")]
@@ -41,11 +47,19 @@ public class RebirthManager : MonoBehaviour
 
     public void Rebirth()
     {
-        if(ManaManager.Instance.Mana < Cost) {
-            return;
+        if (ManaManager.Instance.Mana < Cost) return;
+
+        Rebirths += 1;
+
+        // Return Rebirth-tier items on the board to the inventory before wiping.
+        foreach (PlacedItem item in grid.AllItems)
+        {
+            if (item.SourcePrefab.RebirthTier)
+            {
+                Inventory.Instance.Add(item.SourcePrefab);
+            }
         }
 
-        Rebirths+=1;
         grid.ClearAll();
 
         foreach (Element element in FindObjectsByType<Element>())
@@ -54,13 +68,47 @@ public class RebirthManager : MonoBehaviour
         }
 
         ManaManager.Instance.ResetToStart();
-        Update();
+        Inventory.Instance.ResetForRebirth();   // starting kit + kept rewards
         RefreshText();
+        ShowChoices();
     }
 
     void RefreshText()
     {
         buttonText.text = "Rebirth\n" + Cost.ToString("0") + " mana";
         statusText.text = "Rebirths: " + Rebirths + "    Income x" + IncomeMultiplier.ToString("0.##");
+    }
+    
+    // Offer every reward the player doesn't own yet.
+    void ShowChoices()
+    {
+        foreach (Transform child in choiceButtons)
+        {
+            Destroy(child.gameObject);
+        }
+
+        bool anyLeft = false;
+        foreach (PlacedItem reward in rewards)
+        {
+            if (Inventory.Instance.Count(reward) > 0) continue; // already owned
+            anyLeft = true;
+
+            Button button = Instantiate(choiceButtonPrefab, choiceButtons);
+            button.GetComponentInChildren<TMP_Text>().text = reward.DisplayName;
+            button.onClick.AddListener(() => Choose(reward));
+        }
+
+        if (!anyLeft) return; // everything owned: nothing to choose
+
+        choicePanel.SetActive(true);
+        Time.timeScale = 0f; // freeze the game while choosing
+    }
+
+    void Choose(PlacedItem reward)
+    {
+        Inventory.Instance.Add(reward);
+        choicePanel.SetActive(false);
+        Time.timeScale = 1f; // Unfreeze
+
     }
 }
