@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!221 &22100000
+AnimatorOverrideController:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Ember Condenser
+  m_Controller: {fileID: 9100000, guid: 7dbb39b72bd8b24459a53d5abd649bbf, type: 2}
+  m_Clips:
+  - m_OriginalClip: {fileID: 7400000, guid: 52d747725ea152341abe2b0361a3a403, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: 27df65ca531590e4d85d9bd0692e4eb3, type: 2}
+  - m_OriginalClip: {fileID: 7400000, guid: de4cb6083fe92a74a83c562b6771655e, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: 3ccd07c43d084a74ea55284f24fb2263, type: 2}
+  - m_OriginalClip: {fileID: 7400000, guid: 81fdb8af45569c44da63520401ce76b7, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: eb2bb14ae02bbf149aa223ef77113fe6, type: 2}

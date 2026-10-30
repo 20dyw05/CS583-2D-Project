@@ -16,3 +16,5 @@ MonoBehaviour:
   permanent: 0
   tintsElement: 1
   tint: {r: 1, g: 0.13259405, b: 0, a: 1}
+  look: {fileID: 21300000, guid: ab2b048918a5e7e4db893a9f548dbc39, type: 3}
+  lookFlash: {fileID: 21300000, guid: a4c76e59dc240994492dd5e0a4817d90, type: 3}

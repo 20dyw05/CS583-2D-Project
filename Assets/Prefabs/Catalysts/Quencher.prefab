@@ -173,7 +173,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 4
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 21300000, guid: c5386709b7eec914c88dfe8d0b921e03, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 34680692d9553434b8635d0018f6540c, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -411,25 +411,62 @@ MonoBehaviour:
     data: {fileID: 11400000, guid: e699df382f3ee7646abe9528fee74dd6, type: 2}
     back: {fileID: 21300000, guid: e49666d3cc8ede548b46894702a29369, type: 3}
     front: {fileID: 21300000, guid: 0fc00e984d79bf449a2787d84e173746, type: 3}
-    field: {fileID: 21300000, guid: c5386709b7eec914c88dfe8d0b921e03, type: 3}
+    field: {fileID: 21300000, guid: 34680692d9553434b8635d0018f6540c, type: 3}
+    fieldFrames:
+    - {fileID: 21300000, guid: 34680692d9553434b8635d0018f6540c, type: 3}
+    - {fileID: 21300000, guid: 9b18583164d2c7f409b4b881e4394d5a, type: 3}
+    - {fileID: 21300000, guid: daec166d697276e4d97095b9ca4393be, type: 3}
+    - {fileID: 21300000, guid: 6b2bf4907b5f8e64b959c1ba9e3893d8, type: 3}
+    - {fileID: 21300000, guid: 7b3444ded203b8249941a4a93eef9387, type: 3}
+    - {fileID: 21300000, guid: 25fbc4a6f13f0f1499f50991e841a5d5, type: 3}
+    - {fileID: 21300000, guid: 052f309da615c12409e5878aa3f4dac2, type: 3}
+    - {fileID: 21300000, guid: b1f7ea6199177b9419041b1d0adf28bc, type: 3}
   - cost: 700
     data: {fileID: 11400000, guid: b36e3b23c7039b64da0fe657a875aca3, type: 2}
     back: {fileID: 21300000, guid: 85e4b52f1c685d84d97406cbed65383a, type: 3}
     front: {fileID: 21300000, guid: 2ab29f5e51a44b84082072e5885abc2b, type: 3}
-    field: {fileID: 21300000, guid: d77a338472231e148a0c8b0d6c410dec, type: 3}
+    field: {fileID: 21300000, guid: 173618be7fdb4684fbe3b66b73fc98a6, type: 3}
+    fieldFrames:
+    - {fileID: 21300000, guid: 173618be7fdb4684fbe3b66b73fc98a6, type: 3}
+    - {fileID: 21300000, guid: 8956819738fb94242a051c7e4349db54, type: 3}
+    - {fileID: 21300000, guid: d3d7c78738323dc48a3bb24d265e105e, type: 3}
+    - {fileID: 21300000, guid: 878d684c0613b984c9d3c57c6a6b8b3f, type: 3}
+    - {fileID: 21300000, guid: 98165b85f8ffdbe4aad87d00027f7ed6, type: 3}
+    - {fileID: 21300000, guid: 8169fae9e9b3a664e9122aa747e50e90, type: 3}
+    - {fileID: 21300000, guid: f669ed520dd5b48458fc07048bc63b1d, type: 3}
+    - {fileID: 21300000, guid: b2e4f2cf5a0fdcd4398005d05da9bef0, type: 3}
   - cost: 1400
     data: {fileID: 11400000, guid: f31af9f5bca6b9b49b35d1748da8b556, type: 2}
     back: {fileID: 21300000, guid: 6b420fa2bc4d2934ca5281e3a1e2128a, type: 3}
     front: {fileID: 21300000, guid: 938ad3a9607291c428b814c1a5a2880b, type: 3}
-    field: {fileID: 21300000, guid: 567e11633a971ae418717615abf6fc9e, type: 3}
+    field: {fileID: 21300000, guid: aced2bf75bc488c4babecfe0ba6aa445, type: 3}
+    fieldFrames:
+    - {fileID: 21300000, guid: aced2bf75bc488c4babecfe0ba6aa445, type: 3}
+    - {fileID: 21300000, guid: 9b9c796a971293841ad8d515b6dd24dd, type: 3}
+    - {fileID: 21300000, guid: a61e3c3ffa114f74a8e75e2af257d792, type: 3}
+    - {fileID: 21300000, guid: 807a81e07da96804b9d2a8bf79a34785, type: 3}
+    - {fileID: 21300000, guid: 5cc40be90035ea4499e9567c2fd7d8ab, type: 3}
+    - {fileID: 21300000, guid: b98da0125fbd72f4cb6dec2a4885d2f4, type: 3}
+    - {fileID: 21300000, guid: f67b849f98b2ce24bbe040b0dd59f76b, type: 3}
+    - {fileID: 21300000, guid: 75aa20194faacc94bbcfbea2c2d349ed, type: 3}
   - cost: 2800
     data: {fileID: 11400000, guid: e8c4952e588f4cc46b84853b8dfcf737, type: 2}
     back: {fileID: 21300000, guid: d69f6e48bd5f3dc429826b98cb86b7a0, type: 3}
     front: {fileID: 21300000, guid: 0528240bdbdbf2a408e35df8941517c6, type: 3}
-    field: {fileID: 21300000, guid: e50f9cd77ef0db14587172abbc68caa3, type: 3}
+    field: {fileID: 21300000, guid: ba0951717ec7b024582296efe4a7ace8, type: 3}
+    fieldFrames:
+    - {fileID: 21300000, guid: ba0951717ec7b024582296efe4a7ace8, type: 3}
+    - {fileID: 21300000, guid: e55d7fccc7d94d6429e7a6d97a114693, type: 3}
+    - {fileID: 21300000, guid: a39959b343e2a594fb51acd4309971b7, type: 3}
+    - {fileID: 21300000, guid: 29b88f39f9233cb4a93ec19deb67cf7d, type: 3}
+    - {fileID: 21300000, guid: 0831a27612845064abdb2abf1f8ca220, type: 3}
+    - {fileID: 21300000, guid: f1db3143aa0d70e4c9aa283e71667772, type: 3}
+    - {fileID: 21300000, guid: 006409aed962edb4194af5f26486bea5, type: 3}
+    - {fileID: 21300000, guid: 5d17eece1233d314ab84a6154e828a6e, type: 3}
   archBack: {fileID: 8109708705689237376}
   archFront: {fileID: 5553798733991853571}
   field: {fileID: 6086366603389779563}
+  fieldFps: 10
 --- !u!61 &-2168184963109089449
 BoxCollider2D:
   m_ObjectHideFlags: 0

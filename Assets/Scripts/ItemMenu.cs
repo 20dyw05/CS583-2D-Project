@@ -2,9 +2,9 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-// The little window beside a selected item: its name and stage, then Upgrade, Move (R) and Stash (Z).
-// The buttons call back into the PlacementController, which does the work. The tooltip explaining
-// the item sits on its other side.
+// The little window beside a selected item on the board: its name and stage, then Upgrade,
+// Move (R) and Stash (Z). The buttons call back into the PlacementController, which does the work.
+// The tooltip explaining the item sits on its other side.
 public class ItemMenu : MonoBehaviour
 {
     [SerializeField] PlacementController placement;
@@ -22,7 +22,10 @@ public class ItemMenu : MonoBehaviour
     TMP_Text upgradeText;
     Canvas canvas;
 
-    public bool IsOpen => panel.gameObject.activeSelf;
+    public bool IsOpen
+    {
+        get { return panel.gameObject.activeSelf; }
+    }
 
     void Awake()
     {
@@ -48,13 +51,24 @@ public class ItemMenu : MonoBehaviour
     {
         item = null;
         panel.gameObject.SetActive(false);
-        if (ItemTooltip.Instance != null) ItemTooltip.Instance.HideSelected();
+        if (ItemTooltip.Instance != null)
+        {
+            ItemTooltip.Instance.HideSelected();
+        }
     }
 
     void LateUpdate()
     {
-        if (!IsOpen) return;
-        if (item == null) { Hide(); return; } // the item was removed
+        if (!IsOpen)
+        {
+            return;
+        }
+
+        if (item == null)
+        {
+            Hide(); // the item was removed
+            return;
+        }
 
         Refresh();
         Follow();
@@ -65,13 +79,22 @@ public class ItemMenu : MonoBehaviour
     {
         title.text = item.StageName;
 
-        // Items with only one stage (conveyors, for now the Condenser) just get Move and Stash.
+        // Items with only one stage (conveyors) just get Move and Stash.
         upgradeButton.gameObject.SetActive(item.StageCount > 1);
 
         if (item.CanUpgrade)
         {
-            upgradeText.text = "Upgrade\n" + Format.Price(item.UpgradeCost);
-            upgradeButton.interactable = ManaManager.Instance.Mana >= item.UpgradeCost;
+            string price;
+            if (GodMode.IsOn)
+            {
+                price = "Free";
+            }
+            else
+            {
+                price = Format.Price(item.UpgradeCost);
+            }
+            upgradeText.text = "Upgrade\n" + price;
+            upgradeButton.interactable = ManaManager.Instance.CanAfford(item.UpgradeCost);
         }
         else
         {
@@ -86,20 +109,41 @@ public class ItemMenu : MonoBehaviour
     {
         float scale = canvas.scaleFactor;
         Vector2 size = panel.rect.size * scale;
+
+        // The screen points a little to the right and left of the item.
         Vector3 centre = item.transform.position;
         Vector3 right = cam.WorldToScreenPoint(centre + new Vector3(0.6f, 0f, 0f));
         Vector3 left = cam.WorldToScreenPoint(centre - new Vector3(0.6f, 0f, 0f));
 
         bool onRight = right.x + size.x <= Screen.width;
-        float x = onRight ? right.x : left.x - size.x;
+        float x;
+        if (onRight)
+        {
+            x = right.x;
+        }
+        else
+        {
+            x = left.x - size.x;
+        }
+
         float y = right.y - size.y / 2f;
         y = Mathf.Clamp(y, bottomBarHeight * scale + 4f, Screen.height - size.y - 4f);
 
         // The panel's pivot is its bottom-left corner.
         panel.position = new Vector3(x, y, 0f);
 
-        if (ItemTooltip.Instance == null) return;
-        if (onRight) ItemTooltip.Instance.ShowSelected(item, left, new Vector2(x + size.x, left.y));
-        else ItemTooltip.Instance.ShowSelected(item, new Vector2(x, left.y), right);
+        if (ItemTooltip.Instance == null)
+        {
+            return;
+        }
+
+        if (onRight)
+        {
+            ItemTooltip.Instance.ShowSelected(item, left, new Vector2(x + size.x, left.y));
+        }
+        else
+        {
+            ItemTooltip.Instance.ShowSelected(item, new Vector2(x, left.y), right);
+        }
     }
 }

@@ -2,8 +2,8 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
-// Every Element's value, always shown just above it (what the F1 debug overlay used to do).
-// Labels are reused from frame to frame instead of being created and destroyed.
+// Every Element's value, always shown just above it. Labels are reused from frame to frame instead
+// of being created and destroyed.
 public class ValueLabels : MonoBehaviour
 {
     [SerializeField] Camera cam;
@@ -12,27 +12,36 @@ public class ValueLabels : MonoBehaviour
     [SerializeField] float height = 11f;
 
     readonly List<TMP_Text> labels = new List<TMP_Text>();
-    readonly List<double> shown = new List<double>();   // the value each label is showing
+    readonly List<double> shownValues = new List<double>();   // the value each label is showing
 
     void LateUpdate()
     {
         int used = 0;
         foreach (Element element in Element.All)
         {
-            if (element.Sinking) continue; // on its way into a Transmutator
+            if (element.Sinking)
+            {
+                continue; // on its way into a Transmutator
+            }
 
+            // Make another label if every one is already in use.
             if (used == labels.Count)
             {
                 labels.Add(Instantiate(labelPrefab, transform));
-                shown.Add(double.NaN);
+                shownValues.Add(double.NaN);
             }
 
             TMP_Text label = labels[used];
-            if (!label.gameObject.activeSelf) label.gameObject.SetActive(true);
-            if (shown[used] != element.Value)
+            if (!label.gameObject.activeSelf)
+            {
+                label.gameObject.SetActive(true);
+            }
+
+            // Only rewrite the text when the value has changed.
+            if (shownValues[used] != element.Value)
             {
                 label.text = Format.Short(element.Value);
-                shown[used] = element.Value;
+                shownValues[used] = element.Value;
             }
 
             // Pixels of the art -> world -> screen.
@@ -44,7 +53,10 @@ public class ValueLabels : MonoBehaviour
         // Hide the labels nobody needs this frame.
         for (int i = used; i < labels.Count; i++)
         {
-            if (labels[i].gameObject.activeSelf) labels[i].gameObject.SetActive(false);
+            if (labels[i].gameObject.activeSelf)
+            {
+                labels[i].gameObject.SetActive(false);
+            }
         }
     }
 }

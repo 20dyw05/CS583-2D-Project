@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b3a4a243f788c80459f561d0a10be409, type: 3}
+  m_Name: Event Horizon
+  m_EditorClassIdentifier: Assembly-CSharp::CatalystData
+  displayName: Event Horizon
+  effects:
+  - {fileID: 11400000, guid: a4f7dd152f9a93e44ac9ed02b48bf40e, type: 2}
+  - {fileID: 11400000, guid: d6c2623f800cd33408ab9a4db7992391, type: 2}
+  valueCap: 0
+  addsTag: {fileID: 11400000, guid: 516f9c10398510b4e8d5a07ff25e8b86, type: 2}
+  tagLimit: 1
+  blockedBy: []
+  removesTags: []
+  removesAllTags: 0

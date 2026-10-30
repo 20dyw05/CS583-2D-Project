@@ -3,6 +3,7 @@ using TMPro;
 using UnityEngine;
 
 // The "+12" that floats up out of a Transmutator and fades, each time it turns an Element into mana.
+// Popups are reused instead of being created and destroyed every time.
 public class ManaPopups : MonoBehaviour
 {
     public static ManaPopups Instance { get; private set; }
@@ -14,6 +15,7 @@ public class ManaPopups : MonoBehaviour
     [Tooltip("How far a popup rises before it's gone (in canvas units).")]
     [SerializeField] float rise = 60f;
 
+    // One popup on screen: its text, where in the world it started, and how old it is.
     class Popup
     {
         public TMP_Text text;
@@ -23,7 +25,7 @@ public class ManaPopups : MonoBehaviour
     }
 
     readonly List<Popup> active = new List<Popup>();
-    readonly Stack<Popup> spare = new Stack<Popup>();
+    readonly Stack<Popup> spare = new Stack<Popup>();   // finished popups, ready to reuse
     Canvas canvas;
 
     void Awake()
@@ -34,6 +36,7 @@ public class ManaPopups : MonoBehaviour
 
     public void Show(Vector3 world, double mana)
     {
+        // Reuse a finished popup if there is one, or make a new one.
         Popup popup;
         if (spare.Count > 0)
         {
@@ -41,7 +44,8 @@ public class ManaPopups : MonoBehaviour
         }
         else
         {
-            popup = new Popup { text = Instantiate(popupPrefab, transform) };
+            popup = new Popup();
+            popup.text = Instantiate(popupPrefab, transform);
             popup.group = popup.text.GetComponent<CanvasGroup>();
         }
 
@@ -55,18 +59,22 @@ public class ManaPopups : MonoBehaviour
 
     void LateUpdate()
     {
+        // Backwards, so finished popups can be removed from the list as we go.
         for (int i = active.Count - 1; i >= 0; i--)
         {
             Popup popup = active[i];
             popup.age += Time.deltaTime;
+
             if (popup.age >= lifetime)
             {
                 popup.text.gameObject.SetActive(false);
                 active.RemoveAt(i);
                 spare.Push(popup);
-                continue;
             }
-            Place(popup);
+            else
+            {
+                Place(popup);
+            }
         }
     }
 
@@ -74,9 +82,19 @@ public class ManaPopups : MonoBehaviour
     void Place(Popup popup)
     {
         float t = popup.age / lifetime;
+        float risen = 1f - (1f - t) * (1f - t);
+
         Vector3 screen = cam.WorldToScreenPoint(popup.world);
-        screen.y += rise * canvas.scaleFactor * (1f - (1f - t) * (1f - t));
+        screen.y += rise * canvas.scaleFactor * risen;
         popup.text.rectTransform.position = screen;
-        popup.group.alpha = t < 0.6f ? 1f : 1f - (t - 0.6f) / 0.4f;
+
+        if (t < 0.6f)
+        {
+            popup.group.alpha = 1f;
+        }
+        else
+        {
+            popup.group.alpha = 1f - (t - 0.6f) / 0.4f;
+        }
     }
 }

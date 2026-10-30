@@ -81,7 +81,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 4
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 21300000, guid: 3605e9124145a5d49b58b638d2689bfd, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 2747b4487b9ed034a8d0f7a7923f26f5, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -173,7 +173,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 5
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 21300000, guid: 2682a38104c6aae40866a38439adc4a9, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 736fb74835a3102499293939634d50d9, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -317,12 +317,22 @@ MonoBehaviour:
   stages:
   - cost: 0
     data: {fileID: 11400000, guid: 963622d8fd10c3847b5cc0e74f7a8df3, type: 2}
-    back: {fileID: 21300000, guid: b4be494233e479347ae70e0a89296d3e, type: 3}
-    front: {fileID: 21300000, guid: 2682a38104c6aae40866a38439adc4a9, type: 3}
-    field: {fileID: 21300000, guid: 3605e9124145a5d49b58b638d2689bfd, type: 3}
+    back: {fileID: 21300000, guid: e9d26257af97121428fe52fbfb8ddd49, type: 3}
+    front: {fileID: 21300000, guid: 736fb74835a3102499293939634d50d9, type: 3}
+    field: {fileID: 21300000, guid: 2747b4487b9ed034a8d0f7a7923f26f5, type: 3}
+    fieldFrames:
+    - {fileID: 21300000, guid: 2747b4487b9ed034a8d0f7a7923f26f5, type: 3}
+    - {fileID: 21300000, guid: a40eb6ff1b0c8d44caf12219091cad1d, type: 3}
+    - {fileID: 21300000, guid: 497859421660c974098e0ab8b9ed41b9, type: 3}
+    - {fileID: 21300000, guid: 0955a7d04103de5499d7648f0ab87e4b, type: 3}
+    - {fileID: 21300000, guid: c3deb5fd1dfe7aa48a793085efa1b207, type: 3}
+    - {fileID: 21300000, guid: 993ef60c5644a5445af331b603e6d70a, type: 3}
+    - {fileID: 21300000, guid: 01c361508086c5141a68d254a3ca2753, type: 3}
+    - {fileID: 21300000, guid: 28bf66f964cec2c4197b72e970f020a6, type: 3}
   archBack: {fileID: 2385351684833292555}
   archFront: {fileID: 1455296939366017953}
   field: {fileID: 6499853222020478724}
+  fieldFps: 10
 --- !u!61 &-2168184963109089449
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -542,7 +552,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: -1
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 21300000, guid: b4be494233e479347ae70e0a89296d3e, type: 3}
+  m_Sprite: {fileID: 21300000, guid: e9d26257af97121428fe52fbfb8ddd49, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0

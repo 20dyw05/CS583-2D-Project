@@ -1,10 +1,12 @@
 using UnityEngine;
 
-// One Catalyst's settings, stored as a file in the Project panel.
+// What one stage of a Catalyst does, saved as an asset (Assets/Catalysts). Its effects run in order,
+// and its tag settings decide which Elements it will work on.
 [CreateAssetMenu(menuName = "Elemental/Catalyst")]
 public class CatalystData : ScriptableObject
 {
     public string displayName = "New Catalyst";
+
     [Tooltip("Applied in order when this Catalyst works. Empty = changes no value.")]
     public CatalystEffect[] effects;
 
@@ -26,5 +28,4 @@ public class CatalystData : ScriptableObject
 
     [Tooltip("Clear every tag (the Resetter).")]
     public bool removesAllTags = false;
-
 }

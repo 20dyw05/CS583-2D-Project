@@ -1,8 +1,9 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-// Faint grid lines around the mouse: clearest right under it, so you can see exactly which
-// tile you're pointing at, and fading out further away so the board stays clean.
+// Faint grid lines around the mouse: clearest right under it, so you can see exactly which tile
+// you're pointing at, and fading out further away so the board stays clean. The fading is done by
+// the GridReveal shader; this script stretches it over the board and tells it where the mouse is.
 public class GridOverlay : MonoBehaviour
 {
     [SerializeField] GridManager grid;
@@ -20,7 +21,7 @@ public class GridOverlay : MonoBehaviour
         lines.transform.position = grid.transform.position + (Vector3)((size + onePixel) / 2f);
         lines.transform.localScale = new Vector3(size.x + onePixel.x, size.y + onePixel.y, 1f);
 
-        material = lines.material; // this renderer's own copy
+        material = lines.material; // this renderer's own copy of the material
         material.SetVector("_Origin", grid.transform.position);
         material.SetFloat("_CellSize", grid.CellSize);
     }
@@ -28,9 +29,12 @@ public class GridOverlay : MonoBehaviour
     void Update()
     {
         Mouse mouse = Mouse.current;
-        if (mouse == null) return;
+        if (mouse == null)
+        {
+            return;
+        }
 
-        // Pixels -> world position, same as placing.
+        // Mouse pixels -> world position, the same way placing works.
         Vector3 world = cam.ScreenToWorldPoint(mouse.position.ReadValue());
         material.SetVector("_Mouse", world);
     }

@@ -1,8 +1,8 @@
 using UnityEngine;
 
-// Turns Elements into mana. A slab the size of a conveyor with a pool of mana on top: whatever
-// touches it, riding in from either side or falling from above, is pulled into the pool.
-// Each stage pays out more, and looks grander.
+// Turns Elements into mana (Miner's Haven's "furnace"). A slab the size of a conveyor with a pool of
+// mana on top: whatever touches it, riding in from either side or falling from above, is pulled into
+// the pool. Each stage pays out more, and looks grander.
 public class Transmutator : PlacedItem
 {
     // One stage of the Transmutator: what it costs, how much it pays, and how it looks.
@@ -30,11 +30,24 @@ public class Transmutator : PlacedItem
     [Tooltip("The middle of the pool, in pixels from the tile's centre. Elements are pulled in here.")]
     [SerializeField] Vector2 poolCentre = new Vector2(-4f, -10f);
 
+    [Header("Bonus")]
+    [Tooltip("Elements with this tag pay extra (an Ember Kiln pays more for Burning ones). Can be empty.")]
+    [SerializeField] ElementTag bonusTag;
+    [Tooltip("How many times more a bonus Element pays.")]
+    [SerializeField] double bonusMultiplier = 2;
+
     float flash;        // 1 right after an Element goes in, fading back to 0
     float timeOffset;   // so two Transmutators don't swirl in step
 
-    public override int StageCount => stages.Length;
-    protected override double CostToReach(int stage) => stages[stage].cost;
+    public override int StageCount
+    {
+        get { return stages.Length; }
+    }
+
+    protected override double CostToReach(int stage)
+    {
+        return stages[stage].cost;
+    }
 
     void Awake()
     {
@@ -68,23 +81,52 @@ public class Transmutator : PlacedItem
         glow.color = new Color(1f, 1f, 1f, Mathf.Clamp01(breathe + flash * 0.4f));
     }
 
-    public override void OnElementEnter(Element element) {
-        if (element.Sinking) return; // already on its way in
+    public override void OnElementEnter(Element element)
+    {
+        if (element.Sinking)
+        {
+            return; // already on its way in
+        }
 
-        double mana = element.Value * stages[Level].payout * RebirthManager.Instance.IncomeMultiplier;
+        // What it's worth: its value, times this stage's payout (more for bonus Elements),
+        // times the Rebirth income bonus.
+        double payout = stages[Level].payout;
+        if (bonusTag != null && element.HasTag(bonusTag))
+        {
+            payout *= bonusMultiplier;
+        }
+        double mana = element.Value * payout * RebirthManager.Instance.IncomeMultiplier;
         ManaManager.Instance.Add(mana);
 
         // Into the pool it goes, and what it was worth floats up out of it.
         Vector3 pool = transform.position + (Vector3)(poolCentre / 50f) * grid.CellSize;
         element.SinkInto(pool);
-        if (ManaPopups.Instance != null) ManaPopups.Instance.Show(pool, mana);
+        if (ManaPopups.Instance != null)
+        {
+            ManaPopups.Instance.Show(pool, mana);
+        }
         flash = 1f;
     }
 
     public override string Describe(int level)
     {
         double payout = stages[level].payout;
-        if (payout == 1) return "Turns Elements into mana.";
-        return "Turns Elements into mana, x" + payout.ToString("0.##") + " their value.";
+
+        string text;
+        if (payout == 1)
+        {
+            text = "Turns Elements into mana.";
+        }
+        else
+        {
+            text = "Turns Elements into mana, x" + payout.ToString("0.##") + " their value.";
+        }
+
+        if (bonusTag != null)
+        {
+            double bonusPayout = payout * bonusMultiplier;
+            text += "\n" + bonusTag.displayName + " Elements: x" + bonusPayout.ToString("0.##") + ".";
+        }
+        return text;
     }
 }

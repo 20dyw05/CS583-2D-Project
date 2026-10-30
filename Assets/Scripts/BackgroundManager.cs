@@ -28,7 +28,7 @@ public class BackgroundManager : MonoBehaviour
     [Tooltip("Seconds to fade from one look to the next.")]
     [SerializeField] float fadeTime = 2f;
 
-    int shown = -1;
+    int shownLook = -1;
 
     void Start()
     {
@@ -38,7 +38,10 @@ public class BackgroundManager : MonoBehaviour
 
     void OnDestroy()
     {
-        if (RebirthManager.Instance != null) RebirthManager.Instance.Reborn -= OnReborn;
+        if (RebirthManager.Instance != null)
+        {
+            RebirthManager.Instance.Reborn -= OnReborn;
+        }
     }
 
     void OnReborn()
@@ -50,8 +53,11 @@ public class BackgroundManager : MonoBehaviour
     void Show(int rebirths, bool fade)
     {
         int index = Mathf.Min(rebirths, looks.Length - 1);
-        if (index == shown) return;
-        shown = index;
+        if (index == shownLook)
+        {
+            return;
+        }
+        shownLook = index;
 
         Look look = looks[index];
         if (fade)

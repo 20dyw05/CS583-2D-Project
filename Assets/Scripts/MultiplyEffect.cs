@@ -1,5 +1,6 @@
 using UnityEngine;
 
+// Multiplies the Element's value (the Doubler, the Multipliers).
 [CreateAssetMenu(menuName = "Elemental/Effects/Multiply")]
 public class MultiplyEffect : CatalystEffect
 {
@@ -10,5 +11,8 @@ public class MultiplyEffect : CatalystEffect
         element.Value *= factor;
     }
 
-    public override string Describe() => "x" + factor.ToString("0.##") + " value.";
+    public override string Describe()
+    {
+        return "x" + Num(factor) + " value.";
+    }
 }

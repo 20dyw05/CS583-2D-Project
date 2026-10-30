@@ -2,8 +2,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-// Press P (or the Shop button) to open. Buy items with mana; they go into the inventory.
-// Opens on the right side of the screen, where the inventory does, so it closes the inventory.
+// The shop window. Press P (or the Shop button) to open it. Buy items with mana; they go into the
+// inventory. It opens on the right side of the screen, where the inventory does, so it closes the
+// inventory when it opens.
 public class ShopMenu : MonoBehaviour
 {
     [SerializeField] PlacementController placement;
@@ -18,50 +19,87 @@ public class ShopMenu : MonoBehaviour
     // One card per item for sale.
     readonly List<ItemCard> cards = new List<ItemCard>();
 
-    public bool IsOpen => panel.activeSelf;
+    public bool IsOpen
+    {
+        get { return panel.activeSelf; }
+    }
 
     void Start()
     {
+        // A card for every item that can be bought, in palette order.
         foreach (PlacedItem item in placement.Palette)
         {
-            if (!item.Buyable) continue;
+            if (!item.Buyable)
+            {
+                continue;
+            }
 
             ItemCard card = Instantiate(cardPrefab, buttonParent);
             card.Set(item);
-            card.Button.onClick.AddListener(() => Buy(item));
+            card.Clicked += Buy;
             cards.Add(card);
         }
 
         Inventory.Instance.Changed += RefreshLabels;
+        if (GodMode.Instance != null)
+        {
+            GodMode.Instance.Changed += RefreshLabels;
+        }
         RefreshLabels();
+
         panel.SetActive(false); // start closed
     }
 
     void OnDestroy()
     {
-        if (Inventory.Instance != null) Inventory.Instance.Changed -= RefreshLabels;
+        if (Inventory.Instance != null)
+        {
+            Inventory.Instance.Changed -= RefreshLabels;
+        }
+        if (GodMode.Instance != null)
+        {
+            GodMode.Instance.Changed -= RefreshLabels;
+        }
     }
 
     void Update()
     {
-        Keyboard kb = Keyboard.current;
-        if (kb != null && kb.pKey.wasPressedThisFrame) Toggle();
-        if (kb != null && kb.escapeKey.wasPressedThisFrame) Close();
+        Keyboard keyboard = Keyboard.current;
+        if (keyboard != null)
+        {
+            if (keyboard.pKey.wasPressedThisFrame)
+            {
+                Toggle();
+            }
+            if (keyboard.escapeKey.wasPressedThisFrame)
+            {
+                Close();
+            }
+        }
 
-        if (!IsOpen) return;
+        if (!IsOpen)
+        {
+            return;
+        }
 
         // Grey out anything you can't afford right now.
         foreach (ItemCard card in cards)
         {
-            card.Button.interactable = ManaManager.Instance.Mana >= card.Item.Price;
+            card.Button.interactable = ManaManager.Instance.CanAfford(card.Item.Price);
         }
     }
 
-    // Open the shop if it's closed, close it if it's open.
+    // Open the shop if it's closed, close it if it's open. (The Shop button calls this.)
     public void Toggle()
     {
-        if (IsOpen) Close();
-        else Open();
+        if (IsOpen)
+        {
+            Close();
+        }
+        else
+        {
+            Open();
+        }
     }
 
     public void Open()
@@ -77,17 +115,27 @@ public class ShopMenu : MonoBehaviour
 
     void Buy(PlacedItem item)
     {
-        if(ManaManager.Instance.TrySpend(item.Price)) {
+        if (ManaManager.Instance.TrySpend(item.Price))
+        {
             Inventory.Instance.Add(item);
         }
     }
 
-    // The price, and how many you already have.
+    // Under each name: the price (or "Free" in God Mode), and how many you already have.
     void RefreshLabels()
     {
         foreach (ItemCard card in cards)
         {
-            card.SetDetail(Format.Price(card.Item.Price) + "\nOwned: " + Inventory.Instance.Count(card.Item));
+            string price;
+            if (GodMode.IsOn)
+            {
+                price = "Free";
+            }
+            else
+            {
+                price = Format.Price(card.Item.Price);
+            }
+            card.SetDetail(price + "\nOwned: " + Inventory.Instance.Count(card.Item));
         }
     }
 }

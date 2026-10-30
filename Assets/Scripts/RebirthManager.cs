@@ -1,7 +1,12 @@
+using System.Collections;
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
+// Rebirth: once you have enough mana, start over with a permanent income bonus and new items.
+// The board and mana are wiped (Rebirth rewards on the board go back to the inventory), the Rebirth
+// table rolls this Rebirth's rewards, and the reveal window shows them.
 public class RebirthManager : MonoBehaviour
 {
     public static RebirthManager Instance { get; private set; }
@@ -12,10 +17,10 @@ public class RebirthManager : MonoBehaviour
     [SerializeField] TMP_Text statusText;
 
     [Header("Rewards")]
-    [SerializeField] PlacedItem[] rewards;
-    [SerializeField] GameObject choicePanel;
-    [SerializeField] Transform choiceButtons;
-    [SerializeField] ItemCard choiceCardPrefab;
+    [Tooltip("Which items each Rebirth can give, and how rare they are.")]
+    [SerializeField] RebirthTable table;
+    [Tooltip("The flash of light and the window that shows what you got.")]
+    [SerializeField] RebirthReveal reveal;
 
     [Header("Balance")]
     [SerializeField] double firstCost = 5000;
@@ -25,11 +30,28 @@ public class RebirthManager : MonoBehaviour
     [SerializeField] double bonusPerRebirth = 0.5;
 
     public int Rebirths { get; private set; }
-    public double Cost => firstCost * System.Math.Pow(costGrowth, Rebirths);
-    public double IncomeMultiplier => 1 + bonusPerRebirth * Rebirths;
 
-    // Fired after every Rebirth. The background listens to this.
+    // What the next Rebirth costs.
+    public double Cost
+    {
+        get { return firstCost * System.Math.Pow(costGrowth, Rebirths); }
+    }
+
+    // How much more every Element pays than it did before any Rebirth (x1.5 after one, x2 after two...).
+    public double IncomeMultiplier
+    {
+        get { return 1 + bonusPerRebirth * Rebirths; }
+    }
+
+    public RebirthTable Table
+    {
+        get { return table; }
+    }
+
+    // Fired after every Rebirth. The background and the placement controller listen to this.
     public event System.Action Reborn;
+
+    bool rebirthing; // between pressing the button and the board being cleared
 
     void Awake()
     {
@@ -39,81 +61,108 @@ public class RebirthManager : MonoBehaviour
     void Start()
     {
         rebirthButton.onClick.AddListener(Rebirth);
+        if (GodMode.Instance != null)
+        {
+            GodMode.Instance.Changed += RefreshText;
+        }
         RefreshText();
+    }
+
+    void OnDestroy()
+    {
+        if (GodMode.Instance != null)
+        {
+            GodMode.Instance.Changed -= RefreshText;
+        }
     }
 
     void Update()
     {
         // The button can only be clicked once you can afford it.
-        rebirthButton.interactable = ManaManager.Instance.Mana >= Cost;
+        rebirthButton.interactable = !rebirthing && ManaManager.Instance.CanAfford(Cost);
     }
 
     public void Rebirth()
     {
-        if (ManaManager.Instance.Mana < Cost) return;
+        if (rebirthing || !ManaManager.Instance.CanAfford(Cost))
+        {
+            return;
+        }
+        StartCoroutine(RebirthRoutine());
+    }
+
+    // The screen fills with light, the board is cleared behind it, then the rewards are shown.
+    IEnumerator RebirthRoutine()
+    {
+        rebirthing = true;
+        Time.timeScale = 0f; // everything stops while the light comes up
+        yield return reveal.FlashIn();
 
         Rebirths += 1;
+        ClearBoard();
+        ManaManager.Instance.ResetToStart();
+        Inventory.Instance.ResetForRebirth(); // the starting kit, plus every Rebirth reward you had
 
-        // Return Rebirth-tier items on the board to the inventory before wiping.
+        List<PlacedItem> won = table.Roll(Rebirths);
+        List<bool> isNew = WhichAreNew(won);
+        foreach (PlacedItem item in won)
+        {
+            Inventory.Instance.Add(item);
+        }
+
+        RefreshText();
+        if (Reborn != null)
+        {
+            Reborn();
+        }
+
+        // The game carries on when the rewards are collected.
+        reveal.Show(Rebirths, IncomeMultiplier, won, isNew);
+        rebirthing = false;
+    }
+
+    // Wipe the board. Rebirth rewards on it go back to the inventory (unless God Mode placed them).
+    void ClearBoard()
+    {
         foreach (PlacedItem item in grid.AllItems)
         {
-            if (item.SourcePrefab.RebirthTier)
+            if (item.SourcePrefab.RebirthTier && !item.PlacedFree)
             {
                 Inventory.Instance.Add(item.SourcePrefab);
             }
         }
-
         grid.ClearAll();
 
         foreach (Element element in FindObjectsByType<Element>())
         {
             element.Dissolve();
         }
+    }
 
-        ManaManager.Instance.ResetToStart();
-        Inventory.Instance.ResetForRebirth();   // starting kit + kept rewards
-        RefreshText();
-        Reborn?.Invoke();
-        ShowChoices();
+    // For each reward: is it something the player has never had before? (Gets a NEW! ribbon.)
+    List<bool> WhichAreNew(List<PlacedItem> won)
+    {
+        List<bool> isNew = new List<bool>();
+        List<PlacedItem> seen = new List<PlacedItem>();
+        foreach (PlacedItem item in won)
+        {
+            bool neverHadOne = Inventory.Instance.Count(item) == 0 && !seen.Contains(item);
+            isNew.Add(neverHadOne);
+            seen.Add(item);
+        }
+        return isNew;
     }
 
     void RefreshText()
     {
-        buttonText.text = "Rebirth\n" + Format.Price(Cost);
+        if (GodMode.IsOn)
+        {
+            buttonText.text = "Rebirth\nFree";
+        }
+        else
+        {
+            buttonText.text = "Rebirth\n" + Format.Price(Cost);
+        }
         statusText.text = "Rebirths: " + Rebirths + "    Income x" + IncomeMultiplier.ToString("0.##");
-    }
-    
-    // Offer every reward the player doesn't own yet.
-    void ShowChoices()
-    {
-        foreach (Transform child in choiceButtons)
-        {
-            Destroy(child.gameObject);
-        }
-
-        bool anyLeft = false;
-        foreach (PlacedItem reward in rewards)
-        {
-            if (Inventory.Instance.Count(reward) > 0) continue; // already owned
-            anyLeft = true;
-
-            ItemCard card = Instantiate(choiceCardPrefab, choiceButtons);
-            card.Set(reward);
-            card.SetDetail("Rebirth reward");
-            card.Button.onClick.AddListener(() => Choose(reward));
-        }
-
-        if (!anyLeft) return; // everything owned: nothing to choose
-
-        choicePanel.SetActive(true);
-        Time.timeScale = 0f; // freeze the game while choosing
-    }
-
-    void Choose(PlacedItem reward)
-    {
-        Inventory.Instance.Add(reward);
-        choicePanel.SetActive(false);
-        Time.timeScale = 1f; // Unfreeze
-
     }
 }

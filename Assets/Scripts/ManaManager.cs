@@ -1,6 +1,7 @@
 using TMPro;
 using UnityEngine;
 
+// Keeps track of the player's mana (the money of the game) and shows it in the bottom bar.
 public class ManaManager : MonoBehaviour
 {
     public static ManaManager Instance { get; private set; }
@@ -10,7 +11,8 @@ public class ManaManager : MonoBehaviour
 
     public double Mana { get; private set; }
 
-    void Awake() {
+    void Awake()
+    {
         Instance = this;
         Mana = startingMana;
     }
@@ -26,34 +28,45 @@ public class ManaManager : MonoBehaviour
         Refresh();
     }
 
-    // Just the number: the gold mana symbol sits next to it.
-    void Refresh()
+    // Is there enough mana for this? (In God Mode everything is affordable.)
+    public bool CanAfford(double amount)
     {
-        manaText.text = Format.Number(Mana);
+        if (GodMode.IsOn)
+        {
+            return true;
+        }
+        return Mana >= amount;
     }
 
     // Spend the amount if there's enough. Returns whether it worked.
-    public bool TrySpend(double amount) {
-        // 1. If Mana is less than amount, return false.
-        // 2. Otherwise, subtract amount from Mana.
-        // 3. Update the text (the same method Add uses).
-        // 4. Return true.
-
-        if(Mana < amount) {
-            return false;
-        } else {
-            Mana -= amount;
-            Refresh();
+    // In God Mode it always works and nothing is taken away.
+    public bool TrySpend(double amount)
+    {
+        if (GodMode.IsOn)
+        {
             return true;
         }
 
+        if (Mana < amount)
+        {
+            return false;
+        }
+
+        Mana -= amount;
+        Refresh();
+        return true;
     }
 
     // Back to the starting amount (used by Rebirth).
     public void ResetToStart()
     {
-        // Set Mana to startingMana, then update the text.
         Mana = startingMana;
         Refresh();
+    }
+
+    // Just the number: the gold mana symbol sits next to it in the bottom bar.
+    void Refresh()
+    {
+        manaText.text = Format.Number(Mana);
     }
 }

@@ -1,5 +1,7 @@
 using UnityEngine;
 
+// Anything that can be placed on the board: Conveyors, Catalysts, Condensers and Transmutators.
+// It knows its tile and which way it faces, its shop details, and its upgrade stage.
 public abstract class PlacedItem : MonoBehaviour
 {
     [SerializeField] Direction facing = Direction.Right;
@@ -14,21 +16,32 @@ public abstract class PlacedItem : MonoBehaviour
     [Tooltip("Its picture in the shop and the inventory.")]
     [SerializeField] Sprite icon;
 
-    public bool RebirthTier => rebirthTier;
-    public bool Buyable => buyable;
-    public string DisplayName => displayName;
-    public double Price => price;
-    public Sprite Icon => icon;
-    // The prefab this item was created from. Set by the grid when placed.
-    public PlacedItem SourcePrefab { get; set; }
-
-    public Vector2Int Cell { get; private set; }
-    public Direction Facing => facing;
-
+    // The board this item is on. Null for the see-through preview that follows the mouse.
     protected GridManager grid;
 
-        // Called once by the grid when the item is placed.
-    public void Init(GridManager grid, Vector2Int cell, Direction facing) {
+    public string DisplayName { get { return displayName; } }
+    public double Price { get { return price; } }
+    public bool Buyable { get { return buyable; } }
+    public bool RebirthTier { get { return rebirthTier; } }
+    public Sprite Icon { get { return icon; } }
+    public Direction Facing { get { return facing; } }
+
+    // The tile it's on.
+    public Vector2Int Cell { get; private set; }
+
+    // The prefab this item was made from. The grid sets it when the item is placed.
+    public PlacedItem SourcePrefab { get; set; }
+
+    // Placed while God Mode was on, so it didn't come out of the inventory.
+    // Stashing it (or a Rebirth) won't put it back there.
+    public bool PlacedFree { get; set; }
+
+    // The mana actually paid for this item's upgrades. Stashing it gives this back.
+    public double ManaSpentOnUpgrades { get; set; }
+
+    // Called once by the grid when the item is placed.
+    public void Init(GridManager grid, Vector2Int cell, Direction facing)
+    {
         this.grid = grid;
         Cell = cell;
         this.facing = facing;
@@ -43,53 +56,86 @@ public abstract class PlacedItem : MonoBehaviour
         OnPlaced();
     }
 
-    // Each item sets itself up for its direction here. Default: nothing.
-    protected virtual void OnPlaced() { }
+    // Each kind of item sets itself up for its direction here. By default there's nothing to do.
+    protected virtual void OnPlaced()
+    {
+    }
 
-    // What happens to an Element that touches this item. Default: nothing.
-    public virtual void OnElementEnter(Element element) { }
+    // What happens to an Element that touches this item. By default nothing.
+    public virtual void OnElementEnter(Element element)
+    {
+    }
 
-    // Called by the grid when the tile to the left or right of this one changes. Default: nothing.
-    public virtual void OnNeighbourChanged() { }
+    // Called by the grid when the tile to the left or right of this one changes. By default nothing.
+    public virtual void OnNeighbourChanged()
+    {
+    }
+
+    // Unity calls this when something enters one of this item's trigger colliders.
+    protected virtual void OnTriggerEnter2D(Collider2D other)
+    {
+        Element element = other.GetComponent<Element>();
+        if (element != null)
+        {
+            OnElementEnter(element);
+        }
+    }
 
     // ---------------- Upgrades ----------------
+
     // 0 = as bought. Each upgrade adds one, up to StageCount - 1.
     public int Level { get; private set; }
 
     // How many stages this item has. Items that can be upgraded override this.
-    public virtual int StageCount => 1;
+    public virtual int StageCount
+    {
+        get { return 1; }
+    }
 
     // Mana to upgrade into this stage. Items that can be upgraded override this.
-    protected virtual double CostToReach(int stage) => 0;
+    protected virtual double CostToReach(int stage)
+    {
+        return 0;
+    }
 
-    public bool CanUpgrade => Level < StageCount - 1;
-    public double UpgradeCost => CanUpgrade ? CostToReach(Level + 1) : 0;
+    public bool CanUpgrade
+    {
+        get { return Level < StageCount - 1; }
+    }
 
-    // All the mana spent upgrading this item. Stashing it gives this back.
-    public double SpentOnUpgrades
+    // The price of the next stage, or 0 if it's fully upgraded.
+    public double UpgradeCost
     {
         get
         {
-            double total = 0;
-            for (int stage = 1; stage <= Level; stage++)
+            if (!CanUpgrade)
             {
-                total += CostToReach(stage);
+                return 0;
             }
-            return total;
+            return CostToReach(Level + 1);
         }
     }
-
-    // The name with its stage, like "Adder III".
-    public string StageName => NameAt(Level);
-
-    // The name of any stage of this item.
-    public string NameAt(int level) => StageCount > 1 ? displayName + " " + Numeral(level + 1) : displayName;
 
     // Spend the mana and move up a stage. Returns whether it worked.
     public bool TryUpgrade()
     {
-        if (!CanUpgrade) return false;
-        if (!ManaManager.Instance.TrySpend(UpgradeCost)) return false;
+        if (!CanUpgrade)
+        {
+            return false;
+        }
+
+        double cost = UpgradeCost;
+        bool free = GodMode.IsOn;
+        if (!ManaManager.Instance.TrySpend(cost))
+        {
+            return false;
+        }
+
+        // Only what was really paid comes back when it's stashed.
+        if (!free)
+        {
+            ManaSpentOnUpgrades += cost;
+        }
 
         SetLevel(Level + 1);
         return true;
@@ -102,28 +148,49 @@ public abstract class PlacedItem : MonoBehaviour
         OnLevelChanged();
     }
 
-    // Each item that can be upgraded swaps its art and gets stronger here. Default: nothing.
-    protected virtual void OnLevelChanged() { }
+    // Each item that can be upgraded swaps its art and gets stronger here. By default nothing.
+    protected virtual void OnLevelChanged()
+    {
+    }
 
-    // ---------------- Tooltip ----------------
+    // ---------------- Names and the tooltip ----------------
+
+    // The name with its stage, like "Adder III".
+    public string StageName
+    {
+        get { return NameAt(Level); }
+    }
+
+    // The name of any stage of this item. Items with only one stage just use their name.
+    public string NameAt(int level)
+    {
+        if (StageCount > 1)
+        {
+            return displayName + " " + Numeral(level + 1);
+        }
+        return displayName;
+    }
+
     // What this item does at a stage, a line or two. Each kind of item describes itself.
-    public virtual string Describe(int level) => "";
+    public virtual string Describe(int level)
+    {
+        return "";
+    }
 
-    // What stops it working, one rule per line. Empty = no limits.
-    public virtual string Limits(int level) => "";
+    // What stops it working, one rule per line. An empty string means no limits.
+    public virtual string Limits(int level)
+    {
+        return "";
+    }
 
-    static string Numeral(int n)
+    // 1 -> "I", 2 -> "II", ... for stage names.
+    static string Numeral(int number)
     {
         string[] numerals = { "I", "II", "III", "IV", "V", "VI", "VII", "VIII" };
-        return n >= 1 && n <= numerals.Length ? numerals[n - 1] : n.ToString();
-    }
-
-    // Unity calls this when something enters one of this item's trigger colliders.
-    protected virtual void OnTriggerEnter2D(Collider2D other) {
-        Element element = other.GetComponent<Element>();
-        if (element != null) {
-            OnElementEnter(element);
+        if (number >= 1 && number <= numerals.Length)
+        {
+            return numerals[number - 1];
         }
+        return number.ToString();
     }
-   
 }

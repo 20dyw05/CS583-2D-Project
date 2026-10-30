@@ -1,5 +1,7 @@
 using UnityEngine;
 
+// Drops a new Element every few seconds (Miner's Haven's "dropper"). The crystal floats and shimmers
+// through its Animator; each upgrade stage adds pieces around it and makes its Elements worth more.
 public class Condenser : PlacedItem
 {
     // One stage of the Condenser: what it costs, what its Elements are worth, and how it looks.
@@ -20,9 +22,12 @@ public class Condenser : PlacedItem
 
     [SerializeField] Element elementPrefab;
     [SerializeField] Stage[] stages;
-    [SerializeField] float interval = 1f; // seconds between drops
+    [Tooltip("Seconds between drops.")]
+    [SerializeField] float interval = 1f;
     [Tooltip("Where a new Element appears, in pixels from the Condenser's centre (just under the crystal tip).")]
     [SerializeField] Vector2 dropPoint = new Vector2(1f, -16f);
+    [Tooltip("Elements it drops start with this tag (an Ember Condenser's are Burning). Can be empty.")]
+    [SerializeField] ElementTag dropTag;
 
     [Header("Art")]
     [SerializeField] SpriteRenderer upgradeBack;
@@ -32,27 +37,38 @@ public class Condenser : PlacedItem
     float timer;
     Animator animator;
 
-    public override int StageCount => stages.Length;
-    protected override double CostToReach(int stage) => stages[stage].cost;
+    public override int StageCount
+    {
+        get { return stages.Length; }
+    }
 
-    void Awake() {
+    protected override double CostToReach(int stage)
+    {
+        return stages[stage].cost;
+    }
+
+    void Awake()
+    {
         animator = GetComponent<Animator>();
     }
 
-    void Start() {
+    void Start()
+    {
         // Start the float at a random point so a row of Condensers doesn't bob in step.
         animator.Play("Idle", 0, Random.value);
         OnLevelChanged();
     }
 
     // Swap in this stage's pieces around the crystal.
-    protected override void OnLevelChanged() {
+    protected override void OnLevelChanged()
+    {
         upgradeBack.sprite = stages[Level].back;
         upgradeFront.sprite = stages[Level].front;
         glow.sprite = stages[Level].glow;
     }
 
-    void Update() {
+    void Update()
+    {
         timer += Time.deltaTime;
         if (timer >= interval)
         {
@@ -62,15 +78,33 @@ public class Condenser : PlacedItem
     }
 
     // Create a new Element that drips out of the crystal tip.
-    void Drop() {
-        // 50 pixels = 1 tile.
-        Vector3 spawn = transform.position + (Vector3)(dropPoint / 50f) * grid.CellSize;
-        Element e = Instantiate(elementPrefab);
-        e.Launch(grid, spawn, stages[Level].elementValue);
+    void Drop()
+    {
+        // The art is 50 pixels per tile, so pixels / 50 = tiles.
+        Vector3 offset = (Vector3)(dropPoint / 50f) * grid.CellSize;
+        Vector3 spawn = transform.position + offset;
+
+        Element element = Instantiate(elementPrefab);
+        element.Launch(grid, spawn, stages[Level].elementValue);
+        element.AddTag(dropTag);
+
         animator.SetTrigger("Drop"); // plays the shimmer
     }
 
-    public override string Describe(int level) =>
-        "Drops an Element worth " + Format.Number(stages[level].elementValue) +
-        " every " + interval.ToString("0.##") + "s.";
+    public override string Describe(int level)
+    {
+        string what;
+        if (dropTag != null)
+        {
+            what = "a " + dropTag.displayName + " Element";
+        }
+        else
+        {
+            what = "an Element";
+        }
+
+        string value = Format.Number(stages[level].elementValue);
+        string seconds = interval.ToString("0.##");
+        return "Drops " + what + " worth " + value + " every " + seconds + "s.";
+    }
 }

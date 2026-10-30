@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 57ca6b351a1b48f48b3b61fe487e6fa7, type: 3}
+  m_Name: Multiply 1.75 Per Status
+  m_EditorClassIdentifier: Assembly-CSharp::MultiplyPerTagEffect
+  tags:
+  - {fileID: 11400000, guid: cb59531fa7f8e4244b32b01db6cc7cf0, type: 2}
+  - {fileID: 11400000, guid: a778782e9f048004d833a1dad04bfe07, type: 2}
+  - {fileID: 11400000, guid: 2a8127233d05a014c86bdb755c2da9be, type: 2}
+  - {fileID: 11400000, guid: 2c7aa0f70d8431b498e3456c1240eafa, type: 2}
+  - {fileID: 11400000, guid: ef27a13c81e4ebf4fb96f43ea3b83336, type: 2}
+  - {fileID: 11400000, guid: 91a71b19c917c974ebc64a28bc85295f, type: 2}
+  factorEach: 1.75

@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b3a4a243f788c80459f561d0a10be409, type: 3}
+  m_Name: Void Rift
+  m_EditorClassIdentifier: Assembly-CSharp::CatalystData
+  displayName: Void Rift
+  effects:
+  - {fileID: 11400000, guid: 8032a04bc7fd8234a8b69744c7c396f1, type: 2}
+  - {fileID: 11400000, guid: 09603187b8d0d24409825a408e9aa44b, type: 2}
+  valueCap: 0
+  addsTag: {fileID: 11400000, guid: fc35f0fb3e4098e4091fe654d472dc74, type: 2}
+  tagLimit: 1
+  blockedBy:
+  - {fileID: 11400000, guid: ef27a13c81e4ebf4fb96f43ea3b83336, type: 2}
+  removesTags: []
+  removesAllTags: 0

@@ -1,0 +1,219 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ccb758fa4315e1247a73d86e28541491, type: 3}
+  m_Name: Rebirth Table
+  m_EditorClassIdentifier: Assembly-CSharp::RebirthTable
+  entries:
+  - item: {fileID: 2348009528218639675, guid: 2fadd3453c45b5f438af7558de2d39b7, type: 3}
+    rarity: 0
+    fromRebirth: 1
+    untilRebirth: 7
+    alwaysAt: 1
+  - item: {fileID: 2348009528218639675, guid: 1f67d1a360a91e541a3a5517ada22211, type: 3}
+    rarity: 0
+    fromRebirth: 2
+    untilRebirth: 8
+    alwaysAt: 0
+  - item: {fileID: 2348009528218639675, guid: 864dd0988e6b3b74f8bb0e8b09071c7b, type: 3}
+    rarity: 0
+    fromRebirth: 2
+    untilRebirth: 10
+    alwaysAt: 0
+  - item: {fileID: 2348009528218639675, guid: d863d5432baa44c48b45418f21561720, type: 3}
+    rarity: 0
+    fromRebirth: 2
+    untilRebirth: 10
+    alwaysAt: 0
+  - item: {fileID: -2033114474398948756, guid: 1212a6056e4b2644382739cfc3311404, type: 3}
+    rarity: 1
+    fromRebirth: 2
+    untilRebirth: 12
+    alwaysAt: 0
+  - item: {fileID: 4349537515072592418, guid: 83ee7269503485e45930e1d7bf12beeb, type: 3}
+    rarity: 1
+    fromRebirth: 2
+    untilRebirth: 12
+    alwaysAt: 0
+  - item: {fileID: 2348009528218639675, guid: 9af07f72fb0e55f488e0125f3836479a, type: 3}
+    rarity: 0
+    fromRebirth: 3
+    untilRebirth: 12
+    alwaysAt: 0
+  - item: {fileID: 2348009528218639675, guid: 95c9583243a9f8a47a72b19b9d4707e9, type: 3}
+    rarity: 0
+    fromRebirth: 3
+    untilRebirth: 12
+    alwaysAt: 0
+  - item: {fileID: 2348009528218639675, guid: 52c6977e5702a32499bf77eb97d12305, type: 3}
+    rarity: 1
+    fromRebirth: 3
+    untilRebirth: 10
+    alwaysAt: 0
+  - item: {fileID: 2348009528218639675, guid: 9d73f4d8557fd794cb4f8d21f42bf12d, type: 3}
+    rarity: 1
+    fromRebirth: 4
+    untilRebirth: 12
+    alwaysAt: 0
+  - item: {fileID: 2348009528218639675, guid: a308e41c86389ec46b7640c623d21184, type: 3}
+    rarity: 1
+    fromRebirth: 4
+    untilRebirth: 0
+    alwaysAt: 0
+  - item: {fileID: 2348009528218639675, guid: 06fcdf966acb73e478b631dac78b8135, type: 3}
+    rarity: 1
+    fromRebirth: 4
+    untilRebirth: 13
+    alwaysAt: 0
+  - item: {fileID: -2033114474398948756, guid: 6d125e7104e9b514281bf62d95d1a098, type: 3}
+    rarity: 2
+    fromRebirth: 4
+    untilRebirth: 0
+    alwaysAt: 0
+  - item: {fileID: 4349537515072592418, guid: 99fffda75bac66746bf07f895b9f38e0, type: 3}
+    rarity: 2
+    fromRebirth: 4
+    untilRebirth: 0
+    alwaysAt: 0
+  - item: {fileID: 2348009528218639675, guid: 2f125d4c235ea9d4da03ff2d22fee313, type: 3}
+    rarity: 1
+    fromRebirth: 5
+    untilRebirth: 0
+    alwaysAt: 5
+  - item: {fileID: 2348009528218639675, guid: 747457a27ff960041866f1c200aa0c52, type: 3}
+    rarity: 2
+    fromRebirth: 5
+    untilRebirth: 0
+    alwaysAt: 0
+  - item: {fileID: 2348009528218639675, guid: a78ba0f2137d4914e97e83da7b68becc, type: 3}
+    rarity: 1
+    fromRebirth: 5
+    untilRebirth: 0
+    alwaysAt: 0
+  - item: {fileID: 2348009528218639675, guid: 0ece78118f86f754481b7a3bb8acd729, type: 3}
+    rarity: 1
+    fromRebirth: 5
+    untilRebirth: 0
+    alwaysAt: 0
+  - item: {fileID: 2348009528218639675, guid: bad8fb6e4dff946408b8ae0523f05463, type: 3}
+    rarity: 2
+    fromRebirth: 6
+    untilRebirth: 0
+    alwaysAt: 0
+  - item: {fileID: 2348009528218639675, guid: f6c909b664606c54095b07692a5d6f73, type: 3}
+    rarity: 2
+    fromRebirth: 6
+    untilRebirth: 0
+    alwaysAt: 0
+  - item: {fileID: -2033114474398948756, guid: f808b7b6bbd1d0f4d9e2af68b6afc813, type: 3}
+    rarity: 3
+    fromRebirth: 6
+    untilRebirth: 0
+    alwaysAt: 0
+  - item: {fileID: 2348009528218639675, guid: c3a7e4647af2a844192a0d287717b352, type: 3}
+    rarity: 2
+    fromRebirth: 7
+    untilRebirth: 0
+    alwaysAt: 0
+  - item: {fileID: 2348009528218639675, guid: 9b458a68f2c5a6148a9a7b307a485803, type: 3}
+    rarity: 2
+    fromRebirth: 7
+    untilRebirth: 0
+    alwaysAt: 0
+  - item: {fileID: 4349537515072592418, guid: 650f4b70b62ce1c4f9b90aeedfb9f594, type: 3}
+    rarity: 3
+    fromRebirth: 7
+    untilRebirth: 0
+    alwaysAt: 0
+  - item: {fileID: 2348009528218639675, guid: 03e59051ac05b6a4c9901ebbd0ca8c7b, type: 3}
+    rarity: 3
+    fromRebirth: 8
+    untilRebirth: 0
+    alwaysAt: 0
+  - item: {fileID: 2348009528218639675, guid: e94d21826c90e5a458739237f609ff3d, type: 3}
+    rarity: 2
+    fromRebirth: 8
+    untilRebirth: 0
+    alwaysAt: 0
+  - item: {fileID: 2348009528218639675, guid: 41d858442192f9644bbb48ff6406ee62, type: 3}
+    rarity: 3
+    fromRebirth: 8
+    untilRebirth: 0
+    alwaysAt: 0
+  - item: {fileID: 2348009528218639675, guid: 3dccd4c79b557084ea4b7954fc77c6f2, type: 3}
+    rarity: 3
+    fromRebirth: 9
+    untilRebirth: 0
+    alwaysAt: 0
+  - item: {fileID: 2348009528218639675, guid: 33f05f1d5c3a78b4dbcaadd836c1f672, type: 3}
+    rarity: 3
+    fromRebirth: 9
+    untilRebirth: 0
+    alwaysAt: 0
+  - item: {fileID: 2348009528218639675, guid: 1384a83f6c85e2245888a20522b662f8, type: 3}
+    rarity: 3
+    fromRebirth: 10
+    untilRebirth: 0
+    alwaysAt: 0
+  - item: {fileID: 2348009528218639675, guid: 27ce3c431bd03034d9e32dae992c2852, type: 3}
+    rarity: 3
+    fromRebirth: 10
+    untilRebirth: 0
+    alwaysAt: 0
+  - item: {fileID: -2033114474398948756, guid: 1e2b536af935254448ef250c5463f623, type: 3}
+    rarity: 4
+    fromRebirth: 10
+    untilRebirth: 0
+    alwaysAt: 10
+  - item: {fileID: 2348009528218639675, guid: 643d26ad1ed1b2d49b96341f7e266ea2, type: 3}
+    rarity: 4
+    fromRebirth: 11
+    untilRebirth: 0
+    alwaysAt: 0
+  - item: {fileID: 2348009528218639675, guid: 20c4aab82764d564c9d1eedba7c62009, type: 3}
+    rarity: 4
+    fromRebirth: 12
+    untilRebirth: 0
+    alwaysAt: 0
+  - item: {fileID: 4349537515072592418, guid: 449d184c4b3fbe142961fc43923ca0e9, type: 3}
+    rarity: 4
+    fromRebirth: 12
+    untilRebirth: 0
+    alwaysAt: 0
+  - item: {fileID: 2348009528218639675, guid: 33bc49e0e34f9c04c8b774efc254d0bf, type: 3}
+    rarity: 4
+    fromRebirth: 13
+    untilRebirth: 0
+    alwaysAt: 0
+  - item: {fileID: 2348009528218639675, guid: 16ef508b0a1686340a4fe8e23530f575, type: 3}
+    rarity: 4
+    fromRebirth: 14
+    untilRebirth: 0
+    alwaysAt: 0
+  - item: {fileID: 2348009528218639675, guid: 086c5a50cb57ca14c831a7ec289c4705, type: 3}
+    rarity: 4
+    fromRebirth: 15
+    untilRebirth: 0
+    alwaysAt: 15
+  rewards: 1
+  extraRewardEvery: 5
+  weights:
+  - 100
+  - 50
+  - 22
+  - 9
+  - 3
+  colors:
+  - {r: 0.78431374, g: 0.8, b: 0.8392157, a: 1}
+  - {r: 0.40784314, g: 0.87058824, b: 0.47058824, a: 1}
+  - {r: 0.34509805, g: 0.63529414, b: 1, a: 1}
+  - {r: 0.7294118, g: 0.4392157, b: 0.98039216, a: 1}
+  - {r: 1, g: 0.76862746, b: 0.2509804, a: 1}

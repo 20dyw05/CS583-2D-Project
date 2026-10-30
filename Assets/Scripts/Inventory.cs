@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-// How many of each item the player owns.
+// How many of each item the player owns (items waiting to be placed on the board).
 public class Inventory : MonoBehaviour
 {
     public static Inventory Instance { get; private set; }
@@ -27,27 +27,54 @@ public class Inventory : MonoBehaviour
         ResetToStart();
     }
 
-    public int Count(PlacedItem item) =>
-        item != null && counts.TryGetValue(item, out int n) ? n : 0;
+    // How many of this item the player owns.
+    public int Count(PlacedItem item)
+    {
+        if (item == null)
+        {
+            return 0;
+        }
+
+        int count;
+        if (counts.TryGetValue(item, out count))
+        {
+            return count;
+        }
+        return 0;
+    }
+
+    // Can one of these be placed right now? Always yes in God Mode.
+    public bool CanTake(PlacedItem item)
+    {
+        return GodMode.IsOn || Count(item) > 0;
+    }
 
     public void Add(PlacedItem item, int amount = 1)
     {
         counts[item] = Count(item) + amount;
-        Changed?.Invoke();
+        TellListeners();
     }
 
-    // Take one if there is one. Returns whether it worked.
+    // Take one out to place it, if there is one. Returns whether it worked.
+    // In God Mode it always works and the count doesn't go down.
     public bool TryTake(PlacedItem item)
     {
-        if(Count(item) <= 0) {
-            return false;
-        } else {
-            counts[item] = Count(item) - 1; 
-            Changed?.Invoke();
+        if (GodMode.IsOn)
+        {
             return true;
         }
+
+        if (Count(item) <= 0)
+        {
+            return false;
+        }
+
+        counts[item] = Count(item) - 1;
+        TellListeners();
+        return true;
     }
 
+    // Back to just the starting kit.
     public void ResetToStart()
     {
         counts.Clear();
@@ -55,23 +82,37 @@ public class Inventory : MonoBehaviour
         {
             counts[stack.item] = Count(stack.item) + stack.count;
         }
-        Changed?.Invoke();
+        TellListeners();
     }
 
-    // Reset to the starting kit, but keep every Rebirth-tier item.
+    // Back to the starting kit, but keep every Rebirth-tier item (Rebirth rewards are never lost).
     public void ResetForRebirth()
     {
+        // Remember the Rebirth-tier items...
         Dictionary<PlacedItem, int> kept = new Dictionary<PlacedItem, int>();
-        foreach(KeyValuePair<PlacedItem, int> entry in counts) {
-            if(entry.Key.RebirthTier) {
+        foreach (KeyValuePair<PlacedItem, int> entry in counts)
+        {
+            if (entry.Key.RebirthTier)
+            {
                 kept[entry.Key] = entry.Value;
-            }    
+            }
         }
 
+        // ...start over...
         ResetToStart();
 
-        foreach(KeyValuePair<PlacedItem, int> entry in kept) {
+        // ...and put them back.
+        foreach (KeyValuePair<PlacedItem, int> entry in kept)
+        {
             Add(entry.Key, entry.Value);
+        }
+    }
+
+    void TellListeners()
+    {
+        if (Changed != null)
+        {
+            Changed();
         }
     }
 }

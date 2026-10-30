@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a16b343882b43fb41ab708b460418cca, type: 3}
+  m_Name: Multiply 12, Risky
+  m_EditorClassIdentifier: Assembly-CSharp::RiskyMultiplyEffect
+  factor: 12
+  breakChance: 0.3
+  safeTag: {fileID: 11400000, guid: 2a8127233d05a014c86bdb755c2da9be, type: 2}

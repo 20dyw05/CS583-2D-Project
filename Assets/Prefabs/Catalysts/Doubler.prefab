@@ -81,7 +81,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 4
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 21300000, guid: 013394a25fdbbc44eb347a0293853f07, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 23e3ffdeb320ed54eac49687ab545e0b, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -319,10 +319,20 @@ MonoBehaviour:
     data: {fileID: 11400000, guid: fcd8120c30514eb43981324db51819c3, type: 2}
     back: {fileID: 21300000, guid: 991cd45e2d21ec24ead839810d295f68, type: 3}
     front: {fileID: 21300000, guid: 7d40f567e09edcc40a1821faf057bb90, type: 3}
-    field: {fileID: 21300000, guid: 013394a25fdbbc44eb347a0293853f07, type: 3}
+    field: {fileID: 21300000, guid: 23e3ffdeb320ed54eac49687ab545e0b, type: 3}
+    fieldFrames:
+    - {fileID: 21300000, guid: 23e3ffdeb320ed54eac49687ab545e0b, type: 3}
+    - {fileID: 21300000, guid: 458bb8da8e03c3d4096a9aca9e9a219e, type: 3}
+    - {fileID: 21300000, guid: 5c210f4d22ca68646a74573405bfbb2b, type: 3}
+    - {fileID: 21300000, guid: 018ca868d42582143bd83825b0204598, type: 3}
+    - {fileID: 21300000, guid: 80ed54bec3e2ff943a14288967993f84, type: 3}
+    - {fileID: 21300000, guid: fdbc2c393a1ba6041906908f70d6b0f6, type: 3}
+    - {fileID: 21300000, guid: 126b790b051053b4dbc1475c4f0bcd0b, type: 3}
+    - {fileID: 21300000, guid: f1f4b96ed5abe954b8ffad51db79b56f, type: 3}
   archBack: {fileID: 4831036021061904598}
   archFront: {fileID: 3907157344899807977}
   field: {fileID: 4469020247569871485}
+  fieldFps: 10
 --- !u!61 &-2168184963109089449
 BoxCollider2D:
   m_ObjectHideFlags: 0
