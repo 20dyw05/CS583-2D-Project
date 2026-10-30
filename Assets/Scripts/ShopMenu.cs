@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
-// Press P to open. Buy items with mana; they go into the inventory.
+// Press P (or the Shop button) to open. Buy items with mana; they go into the inventory.
 public class ShopMenu : MonoBehaviour
 {
     [SerializeField] PlacementController placement;
@@ -43,7 +43,7 @@ public class ShopMenu : MonoBehaviour
     void Update()
     {
         Keyboard kb = Keyboard.current;
-        if (kb != null && kb.pKey.wasPressedThisFrame) panel.SetActive(!panel.activeSelf);
+        if (kb != null && kb.pKey.wasPressedThisFrame) Toggle();
         if (kb != null && kb.escapeKey.wasPressedThisFrame) panel.SetActive(false);
 
         if (!panel.activeSelf) return;
@@ -53,6 +53,12 @@ public class ShopMenu : MonoBehaviour
         {
             buttons[i].interactable = ManaManager.Instance.Mana >= buttonItems[i].Price;
         }
+    }
+
+    // Open the shop if it's closed, close it if it's open.
+    public void Toggle()
+    {
+        panel.SetActive(!panel.activeSelf);
     }
 
     void Buy(PlacedItem item)

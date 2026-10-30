@@ -7,13 +7,18 @@ public class Element : MonoBehaviour
 
     GridManager grid;
 
+    [Tooltip("A brighter frame shown for a moment when a Catalyst works on this Element.")]
+    [SerializeField] Sprite flashSprite;
+
     SpriteRenderer sr;
     Color originalColor;
+    Sprite normalSprite;
     float flash;
 
     void Awake() {
         sr = GetComponent<SpriteRenderer>();
         originalColor = sr.color;
+        normalSprite = sr.sprite;
     }
 
     // How many times each tag has been stamped on this Element.
@@ -78,6 +83,9 @@ public class Element : MonoBehaviour
 
         flash = Mathf.MoveTowards(flash, 0f, Time.deltaTime * 4f);
         sr.color = Color.Lerp(BaseColor(), Color.white, flash * 0.6f);
+
+        // The sprite is already full colour, so the flash also swaps in the brighter frame.
+        sr.sprite = (flash > 0.5f && flashSprite != null) ? flashSprite : normalSprite;
     }
 
     public void Dissolve() {

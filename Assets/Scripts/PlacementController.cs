@@ -3,6 +3,10 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 
+// Everything the mouse does on the board:
+//   - empty tile: place the hotbar item (R flips it)
+//   - an item: a white box shows around it; click it for its menu (Upgrade, Move, Stash)
+//   - R moves the selected item, Z stashes it, right-click stashes whatever is under the mouse
 public class PlacementController : MonoBehaviour
 {
     [SerializeField] GridManager grid;
@@ -10,12 +14,26 @@ public class PlacementController : MonoBehaviour
     [Tooltip("Every item in the game, in the order the hotbar shows them.")]
     [SerializeField] PlacedItem[] palette;
 
-    PlacedItem selectedItem;
+    [Header("Items on the board")]
+    [Tooltip("The white box drawn around the item under the mouse, or the selected one.")]
+    [SerializeField] SpriteRenderer box;
+    [Tooltip("The window with the Upgrade / Move / Stash buttons.")]
+    [SerializeField] ItemMenu menu;
+
+    PlacedItem selectedItem;   // the hotbar's pick (a prefab)
     Direction facing = Direction.Right;
 
     PlacedItem ghost;
     SpriteRenderer[] ghostRenderers;
     Color[] ghostColors;
+
+    PlacedItem selected;       // the item on the board whose menu is open
+
+    // An item picked up with Move. It goes wherever you click next, keeping its upgrades.
+    PlacedItem carried;        // its prefab, or null when not moving anything
+    int carriedLevel;
+    Direction carriedFacing;
+    Vector2Int carriedFrom;
 
     public PlacedItem[] Palette => palette;
 
@@ -36,6 +54,12 @@ public class PlacementController : MonoBehaviour
     void Start()
     {
         SelectSlot(0);
+        RebirthManager.Instance.Reborn += OnReborn;
+    }
+
+    void OnDestroy()
+    {
+        if (RebirthManager.Instance != null) RebirthManager.Instance.Reborn -= OnReborn;
     }
 
     void Update()
@@ -52,27 +76,58 @@ public class PlacementController : MonoBehaviour
         if (kb.digit5Key.wasPressedThisFrame) SelectSlot(4);
         if (kb.digit6Key.wasPressedThisFrame) SelectSlot(5);
 
-        if (ghost == null) return; // nothing selected yet
-
-        // Flip Left / Right with R.
-        if (kb.rKey.wasPressedThisFrame)
-        {
-            facing = facing.Flip();
-            ghost.PreviewFacing(facing);
-        }
-
         // Pixels -> world position -> tile.
         Vector2 screen = mouse.position.ReadValue();
         Vector3 world = cam.ScreenToWorldPoint(screen);
         Vector2Int cell = grid.WorldToGrid(world);
 
-        UpdateGhost(cell);
-
         // Ignore clicks on buttons and other UI.
         bool overUI = EventSystem.current != null && EventSystem.current.IsPointerOverGameObject();
 
-        if (mouse.leftButton.wasPressedThisFrame && !overUI) TryPlace(cell);
-        if (mouse.rightButton.wasPressedThisFrame && !overUI) TryPickUp(cell);
+        if (carried != null)
+        {
+            UpdateMove(kb, mouse, cell, overUI);
+            return;
+        }
+
+        // The selected item is gone (a Rebirth clears the board): close its menu.
+        if (menu.IsOpen && selected == null) CloseMenu();
+
+        PlacedItem hovered = overUI ? null : grid.GetItem(cell);
+
+        // R and Z work on the selected item. With nothing selected, R flips what you're placing.
+        if (selected != null)
+        {
+            if (kb.rKey.wasPressedThisFrame) { Move(); return; }
+            if (kb.zKey.wasPressedThisFrame) { Stash(); return; }
+            if (kb.escapeKey.wasPressedThisFrame) CloseMenu();
+        }
+        else if (kb.rKey.wasPressedThisFrame && ghost != null)
+        {
+            facing = facing.Flip();
+            ghost.PreviewFacing(facing);
+        }
+
+        // The box goes around the selected item, or else whatever is under the mouse.
+        ShowBox(selected != null ? selected : hovered);
+
+        // The ghost only shows over empty tiles, and not while a menu is open.
+        if (ghost != null) UpdateGhost(cell, hovered == null && selected == null && !overUI);
+
+        if (overUI) return;
+
+        if (mouse.leftButton.wasPressedThisFrame)
+        {
+            if (hovered != null) OpenMenu(hovered);   // click an item: its menu
+            else if (selected != null) CloseMenu();   // click the floor: close the menu
+            else TryPlace(cell);                      // otherwise place the hotbar item
+        }
+
+        if (mouse.rightButton.wasPressedThisFrame)
+        {
+            if (hovered != null) StashItem(hovered);
+            else CloseMenu();
+        }
     }
 
     void TryPlace(Vector2Int cell)
@@ -82,16 +137,115 @@ public class PlacementController : MonoBehaviour
         grid.Place(selectedItem, cell, facing);
     }
 
-    void TryPickUp(Vector2Int cell)
+    // ---------------- The item menu ----------------
+
+    void OpenMenu(PlacedItem item)
     {
-        PlacedItem item = grid.GetItem(cell);
-        if(item == null) {
+        selected = item;
+        menu.Show(item);
+    }
+
+    void CloseMenu()
+    {
+        selected = null;
+        menu.Hide();
+    }
+
+    // Menu button: spend mana for the next stage.
+    public void Upgrade()
+    {
+        if (selected != null) selected.TryUpgrade();
+    }
+
+    // Menu button (or Z): back into the inventory. Upgrades are refunded, so nothing is lost.
+    public void Stash()
+    {
+        if (selected != null) StashItem(selected);
+    }
+
+    void StashItem(PlacedItem item)
+    {
+        if (item == selected) CloseMenu();
+        ManaManager.Instance.Add(item.SpentOnUpgrades);
+        Inventory.Instance.Add(item.SourcePrefab);
+        grid.Remove(item.Cell);
+    }
+
+    // Menu button (or R): pick the item up. It follows the mouse until you click an empty tile.
+    public void Move()
+    {
+        if (selected == null) return;
+
+        carried = selected.SourcePrefab;
+        carriedLevel = selected.Level;
+        carriedFacing = selected.Facing;
+        carriedFrom = selected.Cell;
+
+        grid.Remove(selected.Cell);
+        CloseMenu();
+        MakeGhost(carried, carriedFacing, carriedLevel);
+    }
+
+    void UpdateMove(Keyboard kb, Mouse mouse, Vector2Int cell, bool overUI)
+    {
+        box.enabled = false;
+
+        if (kb.rKey.wasPressedThisFrame)
+        {
+            carriedFacing = carriedFacing.Flip();
+            ghost.PreviewFacing(carriedFacing);
+        }
+
+        // Escape or right-click puts it back where it was.
+        if (kb.escapeKey.wasPressedThisFrame || (mouse.rightButton.wasPressedThisFrame && !overUI))
+        {
+            PutDown(carriedFrom);
             return;
         }
 
-        Inventory.Instance.Add(item.SourcePrefab);
-        grid.Remove(cell);
+        UpdateGhost(cell, !overUI);
+
+        if (mouse.leftButton.wasPressedThisFrame && !overUI && grid.CanPlace(cell))
+        {
+            PutDown(cell);
+        }
     }
+
+    void PutDown(Vector2Int cell)
+    {
+        PlacedItem item = grid.Place(carried, cell, carriedFacing);
+        if (item != null) item.SetLevel(carriedLevel);
+        carried = null;
+
+        // Back to the hotbar item.
+        if (selectedItem != null) MakeGhost(selectedItem, facing, 0);
+        else ClearGhost();
+    }
+
+    // A Rebirth while carrying something: it goes the same way as the rest of the board.
+    void OnReborn()
+    {
+        if (carried != null)
+        {
+            if (carried.RebirthTier) Inventory.Instance.Add(carried);
+            carried = null;
+            if (selectedItem != null) MakeGhost(selectedItem, facing, 0);
+            else ClearGhost();
+        }
+        CloseMenu();
+    }
+
+    void ShowBox(PlacedItem item)
+    {
+        box.enabled = item != null;
+        if (item == null) return;
+
+        box.transform.position = grid.GridToWorld(item.Cell);
+        // Solid on the selected item, a little softer on the one under the mouse.
+        box.color = new Color(1f, 1f, 1f, item == selected ? 1f : 0.75f);
+    }
+
+    // ---------------- The hotbar and the ghost ----------------
 
     // Select whatever is in this hotbar slot, if anything.
     void SelectSlot(int slot)
@@ -104,8 +258,12 @@ public class PlacementController : MonoBehaviour
     public void Select(PlacedItem item)
     {
         selectedItem = item;
+        if (carried == null) MakeGhost(item, facing, 0);
+    }
 
-        if (ghost != null) Destroy(ghost.gameObject);
+    void MakeGhost(PlacedItem item, Direction dir, int level)
+    {
+        ClearGhost();
 
         ghost = Instantiate(item);
         ghost.enabled = false; // its script must never run
@@ -115,7 +273,8 @@ public class PlacementController : MonoBehaviour
             col.enabled = false; // its colliders must never touch Elements
         }
 
-        ghost.PreviewFacing(facing);
+        ghost.PreviewFacing(dir);
+        ghost.SetLevel(level);
 
         ghostRenderers = ghost.GetComponentsInChildren<SpriteRenderer>();
         ghostColors = new Color[ghostRenderers.Length];
@@ -125,16 +284,22 @@ public class PlacementController : MonoBehaviour
         }
     }
 
-    // Move the ghost to the hovered tile and tint it.
-    void UpdateGhost(Vector2Int cell)
+    void ClearGhost()
     {
-        bool inside = grid.IsInside(cell);
+        if (ghost != null) Destroy(ghost.gameObject);
+        ghost = null;
+    }
+
+    // Move the ghost to the hovered tile and tint it.
+    void UpdateGhost(Vector2Int cell, bool show)
+    {
+        bool inside = show && grid.IsInside(cell);
         ghost.gameObject.SetActive(inside);
         if (!inside) return;
 
         ghost.transform.position = grid.GridToWorld(cell);
 
-        bool owned = Inventory.Instance.Count(selectedItem) > 0;
+        bool owned = carried != null || Inventory.Instance.Count(selectedItem) > 0;
         Color tint = grid.CanPlace(cell) && owned
             ? new Color(1f, 1f, 1f, 0.5f)      // allowed: see-through
             : new Color(1f, 0.3f, 0.3f, 0.5f); // not allowed: see-through red

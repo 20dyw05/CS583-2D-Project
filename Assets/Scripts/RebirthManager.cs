@@ -28,6 +28,9 @@ public class RebirthManager : MonoBehaviour
     public double Cost => firstCost * System.Math.Pow(costGrowth, Rebirths);
     public double IncomeMultiplier => 1 + bonusPerRebirth * Rebirths;
 
+    // Fired after every Rebirth. The background listens to this.
+    public event System.Action Reborn;
+
     void Awake()
     {
         Instance = this;
@@ -70,6 +73,7 @@ public class RebirthManager : MonoBehaviour
         ManaManager.Instance.ResetToStart();
         Inventory.Instance.ResetForRebirth();   // starting kit + kept rewards
         RefreshText();
+        Reborn?.Invoke();
         ShowChoices();
     }
 

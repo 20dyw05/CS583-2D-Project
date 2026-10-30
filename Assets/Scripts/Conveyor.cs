@@ -6,13 +6,51 @@ public class Conveyor : PlacedItem
     [SerializeField] SurfaceEffector2D effector;
     [SerializeField] Transform arrow;
 
+    [Header("Belt")]
+    [SerializeField] SpriteRenderer belt;
+    [Tooltip("A conveyor on its own, with an end block on both sides.")]
+    [SerializeField] Sprite single;
+    [Tooltip("The left end of a longer belt (open on the right).")]
+    [SerializeField] Sprite leftEnd;
+    [Tooltip("Inside a longer belt (open on both sides).")]
+    [SerializeField] Sprite middle;
+    [Tooltip("The right end of a longer belt (open on the left).")]
+    [SerializeField] Sprite rightEnd;
+
     protected override void OnPlaced() {
         if(Facing == Direction.Right) {
             effector.speed = speed;
-            arrow.localRotation = Quaternion.Euler(0f, 0f, -90f);
         } else {
             effector.speed = -speed;
-            arrow.localRotation = Quaternion.Euler(0f, 0f, 90f);
         }
+
+        // The arrow plate is drawn pointing right; mirror it for belts that run left.
+        arrow.GetComponent<SpriteRenderer>().flipX = Facing == Direction.Left;
+
+        RefreshBelt();
+    }
+
+    // Something was placed or picked up next to this conveyor.
+    public override void OnNeighbourChanged() {
+        RefreshBelt();
+    }
+
+    // Join up with the conveyors either side, so a row of them reads as one long belt.
+    void RefreshBelt() {
+        bool left = JoinsWith(Cell + Vector2Int.left);
+        bool right = JoinsWith(Cell + Vector2Int.right);
+
+        if (left && right) belt.sprite = middle;
+        else if (right) belt.sprite = leftEnd;
+        else if (left) belt.sprite = rightEnd;
+        else belt.sprite = single;
+    }
+
+    // Is there a conveyor on that tile running the same way as this one?
+    bool JoinsWith(Vector2Int cell) {
+        if (grid == null) return false; // the placement preview isn't on the grid
+
+        Conveyor other = grid.GetItem(cell) as Conveyor;
+        return other != null && other.Facing == Facing;
     }
 }

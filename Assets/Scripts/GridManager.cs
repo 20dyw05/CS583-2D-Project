@@ -13,6 +13,8 @@ public class GridManager : MonoBehaviour
     readonly Dictionary<Vector2Int, PlacedItem> items = new Dictionary<Vector2Int, PlacedItem>();
 
     public float CellSize => cellSize;
+    public int Width => width;
+    public int Height => height;
     // Every item currently on the board.
     public IEnumerable<PlacedItem> AllItems => items.Values;
 
@@ -56,6 +58,7 @@ public class GridManager : MonoBehaviour
         item.Init(this, cell, facing);
         item.SourcePrefab = prefab;
         items[cell] = item;
+        TellNeighbours(cell);
         return item;
     }
 
@@ -66,6 +69,7 @@ public class GridManager : MonoBehaviour
         if (item == null) return;          //    ...and stop if there isn't one
         Destroy(item.gameObject);          // 2. destroy its GameObject
         items.Remove(cell);                // 3. forget the tile
+        TellNeighbours(cell);              // 4. let the tiles either side know
     }
 
     // Remove every placed item from the board.
@@ -76,6 +80,16 @@ public class GridManager : MonoBehaviour
         } 
 
         items.Clear();
+    }
+
+    // Let the items either side of a tile know it changed (conveyors use this to join up).
+    void TellNeighbours(Vector2Int cell)
+    {
+        PlacedItem left = GetItem(cell + Vector2Int.left);
+        if (left != null) left.OnNeighbourChanged();
+
+        PlacedItem right = GetItem(cell + Vector2Int.right);
+        if (right != null) right.OnNeighbourChanged();
     }
 
     // Editor-only drawing: gray outline for every tile, green fill for unlocked ones.
