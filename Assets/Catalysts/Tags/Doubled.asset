@@ -18,5 +18,3 @@ MonoBehaviour:
   tint: {r: 1, g: 1, b: 1, a: 1}
   look: {fileID: 0}
   lookFlash: {fileID: 0}
-  sound: {fileID: 0}
-  soundWhenRemoved: {fileID: 0}

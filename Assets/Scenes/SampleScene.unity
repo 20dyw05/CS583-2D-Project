@@ -4096,9 +4096,6 @@ MonoBehaviour:
   upgrade: {fileID: 8300000, guid: 7292ae7ea5de8eb46beda6cacd41e075, type: 3}
   place: {fileID: 8300000, guid: 20b7d2df96d4e1840913a9d1ed783ed9, type: 3}
   stash: {fileID: 8300000, guid: 2a2ae5f76e2bc4045a456dd13d7ee1d0, type: 3}
-  drop: {fileID: 8300000, guid: f0f13d7ebb7e0ba439ad57afcc5678e6, type: 3}
-  catalyst: {fileID: 8300000, guid: b2ab60f4e9944e343a5fece2a4071a33, type: 3}
-  transmute: {fileID: 8300000, guid: eb9dd5aaf78905f49b9bd2916080e487, type: 3}
   minimumGap: 0.05
   voiceCount: 16
 --- !u!4 &1438852379

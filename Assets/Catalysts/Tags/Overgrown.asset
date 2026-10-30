@@ -18,5 +18,3 @@ MonoBehaviour:
   tint: {r: 1, g: 1, b: 1, a: 1}
   look: {fileID: 21300000, guid: 9ed6264a2efc6b649b7c4ffb5d67d9ab, type: 3}
   lookFlash: {fileID: 21300000, guid: b1619ff0573d62a4b851b9297c9d147d, type: 3}
-  sound: {fileID: 8300000, guid: 5325576c8fe8d7242aa20181da98a023, type: 3}
-  soundWhenRemoved: {fileID: 0}

@@ -5,9 +5,8 @@ using UnityEngine;
 // AudioSource it plays through. Anything that makes a sound calls it, for example
 // AudioManager.Instance.PlayCantAfford().
 //
-// There is no music: the factory makes the soundtrack. Condensers drip, Catalysts tink, statuses
-// whoosh and Transmutators ding, and the more valuable the Element, the higher the note. Those
-// sounds come in floods, so the same one never plays twice within a moment of itself.
+// There is no music, and the factory itself runs quietly: sounds mark what the player does (buying,
+// placing, upgrading, Rebirth) rather than every Element, so they never turn into a constant drone.
 //
 // Sounds still play while the game is paused for the Rebirth window: pausing (Time.timeScale = 0)
 // doesn't stop audio.
@@ -42,21 +41,11 @@ public class AudioManager : MonoBehaviour
     [Tooltip("An item put back into the inventory.")]
     [SerializeField] AudioClip stash;
 
-    [Header("The factory")]
-    [Tooltip("A Condenser dropping an Element.")]
-    [SerializeField] AudioClip drop;
-    [Tooltip("A Catalyst working on an Element.")]
-    [SerializeField] AudioClip catalyst;
-    [Tooltip("A Transmutator turning an Element into mana.")]
-    [SerializeField] AudioClip transmute;
-    [Tooltip("The same sound never plays twice within this many seconds.")]
+    [Header("Rapid sounds (the reels)")]
+    [Tooltip("The same rapid sound never plays twice within this many seconds.")]
     [SerializeField] float minimumGap = 0.05f;
-    [Tooltip("How many sounds with a pitch of their own can play at once.")]
+    [Tooltip("How many rapid sounds, each at a pitch of its own, can play at once.")]
     [SerializeField] int voiceCount = 16;
-
-    // The notes of a major pentatonic scale, in semitones above the first. Any of them sound good
-    // together, so a busy factory still sounds musical.
-    static readonly int[] Scale = { 0, 2, 4, 7, 9 };
 
     AudioSource[] voices;      // extra sources for sounds played at their own pitch
     int nextVoice;             // the voices take turns
@@ -102,9 +91,10 @@ public class AudioManager : MonoBehaviour
         }
     }
 
+    // Several reels can turn at once, so their clicks are spaced out and vary a little in pitch.
     public void PlayReelTick()
     {
-        PlayOften(reelTick, Random.Range(0.96f, 1.04f));
+        PlayRapid(reelTick, Random.Range(0.96f, 1.04f));
     }
 
     public void PlayCollect()
@@ -141,42 +131,6 @@ public class AudioManager : MonoBehaviour
         Play(stash);
     }
 
-    // ---------------- The factory ----------------
-
-    public void PlayDrop()
-    {
-        PlayOften(drop, Random.Range(0.94f, 1.06f));
-    }
-
-    // Higher notes for more valuable Elements.
-    public void PlayCatalyst(double elementValue)
-    {
-        PlayOften(catalyst, PitchForValue(elementValue));
-    }
-
-    public void PlayTransmute(double elementValue)
-    {
-        PlayOften(transmute, PitchForValue(elementValue));
-    }
-
-    // A status (Burning, Frozen...) was put on an Element. The sound lives on the status itself.
-    public void PlayStatus(ElementTag status)
-    {
-        if (status != null)
-        {
-            PlayOften(status.sound, Random.Range(0.95f, 1.05f));
-        }
-    }
-
-    // A status was taken off an Element (a Quencher putting out a Burning one).
-    public void PlayStatusRemoved(ElementTag status)
-    {
-        if (status != null)
-        {
-            PlayOften(status.soundWhenRemoved, Random.Range(0.95f, 1.05f));
-        }
-    }
-
     // ---------------- Playing ----------------
 
     // For sounds that only happen now and then. PlayOneShot lets sounds overlap instead of
@@ -189,9 +143,9 @@ public class AudioManager : MonoBehaviour
         }
     }
 
-    // For sounds that can come in floods: skipped if the same sound only just played, and played
-    // at a pitch of its own.
-    void PlayOften(AudioClip clip, float pitch)
+    // For sounds that can come many at a time: skipped if the same sound only just played, and
+    // played at a pitch of its own.
+    void PlayRapid(AudioClip clip, float pitch)
     {
         if (clip == null || PlayedRecently(clip))
         {
@@ -215,21 +169,5 @@ public class AudioManager : MonoBehaviour
         }
         lastPlayed[clip] = Time.unscaledTime;
         return false;
-    }
-
-    // One note up the scale every time an Element's value grows ten times: 1 plays the first note,
-    // 10 the second, 100 the third, and so on, up to an octave and a half higher.
-    static float PitchForValue(double value)
-    {
-        int step = 0;
-        double nextStep = 10;
-        while (value >= nextStep && step < 8)
-        {
-            step++;
-            nextStep *= 10;
-        }
-
-        int semitones = Scale[step % Scale.Length] + 12 * (step / Scale.Length);
-        return Mathf.Pow(2f, semitones / 12f);
     }
 }
