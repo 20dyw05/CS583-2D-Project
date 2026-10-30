@@ -15,7 +15,7 @@ public class RebirthManager : MonoBehaviour
     [SerializeField] PlacedItem[] rewards;
     [SerializeField] GameObject choicePanel;
     [SerializeField] Transform choiceButtons;
-    [SerializeField] Button choiceButtonPrefab;
+    [SerializeField] ItemCard choiceCardPrefab;
 
     [Header("Balance")]
     [SerializeField] double firstCost = 5000;
@@ -79,7 +79,7 @@ public class RebirthManager : MonoBehaviour
 
     void RefreshText()
     {
-        buttonText.text = "Rebirth\n" + Cost.ToString("0") + " mana";
+        buttonText.text = "Rebirth\n" + Format.Price(Cost);
         statusText.text = "Rebirths: " + Rebirths + "    Income x" + IncomeMultiplier.ToString("0.##");
     }
     
@@ -97,9 +97,10 @@ public class RebirthManager : MonoBehaviour
             if (Inventory.Instance.Count(reward) > 0) continue; // already owned
             anyLeft = true;
 
-            Button button = Instantiate(choiceButtonPrefab, choiceButtons);
-            button.GetComponentInChildren<TMP_Text>().text = reward.DisplayName;
-            button.onClick.AddListener(() => Choose(reward));
+            ItemCard card = Instantiate(choiceCardPrefab, choiceButtons);
+            card.Set(reward);
+            card.SetDetail("Rebirth reward");
+            card.Button.onClick.AddListener(() => Choose(reward));
         }
 
         if (!anyLeft) return; // everything owned: nothing to choose

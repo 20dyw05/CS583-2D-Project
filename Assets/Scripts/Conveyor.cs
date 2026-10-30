@@ -46,11 +46,18 @@ public class Conveyor : PlacedItem
         else belt.sprite = single;
     }
 
-    // Is there a conveyor on that tile running the same way as this one?
+    // Is there a conveyor on that tile running the same way as this one? A Transmutator counts too:
+    // its slab is the same size as a belt, so the belt runs straight into it.
     bool JoinsWith(Vector2Int cell) {
         if (grid == null) return false; // the placement preview isn't on the grid
 
-        Conveyor other = grid.GetItem(cell) as Conveyor;
+        PlacedItem item = grid.GetItem(cell);
+        if (item is Transmutator) return true;
+
+        Conveyor other = item as Conveyor;
         return other != null && other.Facing == Facing;
     }
+
+    public override string Describe(int level) =>
+        "Carries Elements along. Press R while placing it to turn it around.";
 }

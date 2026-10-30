@@ -11,11 +11,14 @@ public abstract class PlacedItem : MonoBehaviour
     [SerializeField] bool buyable = true;
     [Tooltip("Kept through Rebirth. Rebirth rewards are Rebirth Tier.")]
     [SerializeField] bool rebirthTier = false;
+    [Tooltip("Its picture in the shop and the inventory.")]
+    [SerializeField] Sprite icon;
 
     public bool RebirthTier => rebirthTier;
     public bool Buyable => buyable;
     public string DisplayName => displayName;
     public double Price => price;
+    public Sprite Icon => icon;
     // The prefab this item was created from. Set by the grid when placed.
     public PlacedItem SourcePrefab { get; set; }
 
@@ -77,7 +80,10 @@ public abstract class PlacedItem : MonoBehaviour
     }
 
     // The name with its stage, like "Adder III".
-    public string StageName => StageCount > 1 ? displayName + " " + Numeral(Level + 1) : displayName;
+    public string StageName => NameAt(Level);
+
+    // The name of any stage of this item.
+    public string NameAt(int level) => StageCount > 1 ? displayName + " " + Numeral(level + 1) : displayName;
 
     // Spend the mana and move up a stage. Returns whether it worked.
     public bool TryUpgrade()
@@ -98,6 +104,13 @@ public abstract class PlacedItem : MonoBehaviour
 
     // Each item that can be upgraded swaps its art and gets stronger here. Default: nothing.
     protected virtual void OnLevelChanged() { }
+
+    // ---------------- Tooltip ----------------
+    // What this item does at a stage, a line or two. Each kind of item describes itself.
+    public virtual string Describe(int level) => "";
+
+    // What stops it working, one rule per line. Empty = no limits.
+    public virtual string Limits(int level) => "";
 
     static string Numeral(int n)
     {

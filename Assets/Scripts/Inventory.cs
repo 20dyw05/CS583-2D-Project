@@ -18,7 +18,7 @@ public class Inventory : MonoBehaviour
 
     readonly Dictionary<PlacedItem, int> counts = new Dictionary<PlacedItem, int>();
 
-    // Fired whenever any count changes. The hotbar listens to this.
+    // Fired whenever any count changes. The inventory and shop windows listen to this.
     public event System.Action Changed;
 
     void Awake()

@@ -397,6 +397,7 @@ MonoBehaviour:
   price: 350
   buyable: 1
   rebirthTier: 0
+  icon: {fileID: 21300000, guid: c2b33f2dabafb544a8244163a5facf7b, type: 3}
   speed: 2
   effector: {fileID: 6227079531153130083}
   arrow: {fileID: 3711347476435547318}

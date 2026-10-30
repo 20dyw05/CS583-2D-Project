@@ -171,7 +171,7 @@ SpriteRenderer:
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 1
+  m_SortingOrder: -2
   m_MaskInteraction: 0
   m_Sprite: {fileID: 21300000, guid: 2d12d3aae9795014d90ab52c993235e5, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -237,55 +237,65 @@ MonoBehaviour:
   price: 20
   buyable: 1
   rebirthTier: 0
+  icon: {fileID: 21300000, guid: 8b31b9fe6d83e9647b2be8e9dd1f8eba, type: 3}
   stages:
   - cost: 0
     payout: 1
     body: {fileID: 21300000, guid: 2d12d3aae9795014d90ab52c993235e5, type: 3}
-    fire:
-    - {fileID: 21300000, guid: c99a165a60b487f47b744dfebdc72749, type: 3}
-    - {fileID: 21300000, guid: e64cabb6254508943a582646da22c8fe, type: 3}
-    - {fileID: 21300000, guid: 22fd184818d180e49ae9035e818dbc80, type: 3}
-    - {fileID: 21300000, guid: 056419e6a19312b4bb185e2adb703bdb, type: 3}
-    - {fileID: 21300000, guid: a557a1874b537aa45a8222da74804688, type: 3}
-    - {fileID: 21300000, guid: fe48e3d0ce7f6654294f3e8cd456de9d, type: 3}
+    portal:
+    - {fileID: 21300000, guid: b311d00e7fcc4bd40a82f9adfe943cb2, type: 3}
+    - {fileID: 21300000, guid: 220a321e73132134ea4a15d16f061875, type: 3}
+    - {fileID: 21300000, guid: 90f3db77c4fa63847a3b976346e893ea, type: 3}
+    - {fileID: 21300000, guid: 5865a6b2079d529438c4a835b9e4fc29, type: 3}
+    - {fileID: 21300000, guid: ff61c9de4febfc642a3749501233126c, type: 3}
+    - {fileID: 21300000, guid: c331c5269ceb6e94f89bbb37ff24f13a, type: 3}
+    - {fileID: 21300000, guid: 9835197435c59d14585ce8ff5e1f0d7e, type: 3}
+    - {fileID: 21300000, guid: 8775620a713b492468f0f19336112cf0, type: 3}
     glow: {fileID: 21300000, guid: 84f79327eb365174281b5be247cc548b, type: 3}
   - cost: 100
     payout: 1.5
     body: {fileID: 21300000, guid: 0d61c2f83cad7b04a820851a37bd0921, type: 3}
-    fire:
-    - {fileID: 21300000, guid: 3baca8a1a40f6284d8267ac809e43189, type: 3}
-    - {fileID: 21300000, guid: 1d884d664aecc254bb1f4b18a921e0fc, type: 3}
-    - {fileID: 21300000, guid: 7d6abaf9c1f329e4eb35ffe1dd9dc15b, type: 3}
-    - {fileID: 21300000, guid: f3dc01d3dd24b634682cc8b955a22123, type: 3}
-    - {fileID: 21300000, guid: 572c2fc149027ca4ca3f74ba9423fa51, type: 3}
-    - {fileID: 21300000, guid: 1c9a362e663fe12498aa91d71c682580, type: 3}
+    portal:
+    - {fileID: 21300000, guid: 75ae3fcdf184cd248853b97dfa6ba90e, type: 3}
+    - {fileID: 21300000, guid: b8ffe4dc628722249a2f823536f2eb01, type: 3}
+    - {fileID: 21300000, guid: cfa76f4afd16fc14197f52291c8588b7, type: 3}
+    - {fileID: 21300000, guid: f04297319cee07f4dac34cd6c0c5f1e0, type: 3}
+    - {fileID: 21300000, guid: eb4c61e40068d3c4b965099243c42399, type: 3}
+    - {fileID: 21300000, guid: c484c71a47909714e824c259aa8e659e, type: 3}
+    - {fileID: 21300000, guid: 74b961397ea5e0947b65161bb51c6a45, type: 3}
+    - {fileID: 21300000, guid: 5b6e45698aab61e43ae5b056df9b9c17, type: 3}
     glow: {fileID: 21300000, guid: 58c3c247915aa01438e86db37c97ad9b, type: 3}
   - cost: 500
     payout: 2
     body: {fileID: 21300000, guid: 215a29eaf86b27343a62daa04e98fb27, type: 3}
-    fire:
-    - {fileID: 21300000, guid: f2f64e329c8e6034390d694b285d1a51, type: 3}
-    - {fileID: 21300000, guid: b2ff72d076e6dd846ab9244d54f8eb9f, type: 3}
-    - {fileID: 21300000, guid: a1f11ddf8e0fca9468b775c0c048c7e2, type: 3}
-    - {fileID: 21300000, guid: 9e9a164ea8d94e54085a3a51c11aea2f, type: 3}
-    - {fileID: 21300000, guid: 3305df6e16024124da70626d6f64a697, type: 3}
-    - {fileID: 21300000, guid: bfd176ce2ade2f54eb2746e918712d62, type: 3}
+    portal:
+    - {fileID: 21300000, guid: 8e3fe82a80d1ca24189d459d75bada34, type: 3}
+    - {fileID: 21300000, guid: fd959ee772f58bb49b6936d24efa597c, type: 3}
+    - {fileID: 21300000, guid: 5caef8934f902d748bddb3fdc57f3de9, type: 3}
+    - {fileID: 21300000, guid: 137ac7f09437f7f449ec498b800d4f38, type: 3}
+    - {fileID: 21300000, guid: e97a344e59cbe8647b4a975b7e483e8d, type: 3}
+    - {fileID: 21300000, guid: bafc452b4f711474f8404d2aa2ebd20e, type: 3}
+    - {fileID: 21300000, guid: 3fa4688933851d34ca3567dd03a7cb3a, type: 3}
+    - {fileID: 21300000, guid: 2fbaca9eb0ba5df43adcb5b2bba58a58, type: 3}
     glow: {fileID: 21300000, guid: 366bc6d0586e8f348b185df6a3f3f21b, type: 3}
   - cost: 2500
     payout: 3
     body: {fileID: 21300000, guid: dc6f512f36d1270449fbe7dedf6451bd, type: 3}
-    fire:
-    - {fileID: 21300000, guid: dec9db04fe2a18b4c9bf21e5ec2a6ce0, type: 3}
-    - {fileID: 21300000, guid: 3a832f3be7dc5da4b93a329c658968a0, type: 3}
-    - {fileID: 21300000, guid: 3b92cb913e2495c43abff9bf9d2d9dd4, type: 3}
-    - {fileID: 21300000, guid: 23532ddd03f158140acef021bf490f57, type: 3}
-    - {fileID: 21300000, guid: 3092461f935530f4e969e7c12ab1d7da, type: 3}
-    - {fileID: 21300000, guid: 403f9d94e9f71454a8183a91725bb2ad, type: 3}
+    portal:
+    - {fileID: 21300000, guid: 52b94aa7cbe86c7428648d6404541251, type: 3}
+    - {fileID: 21300000, guid: 0e949fbc55b1a934385f5b04daeb645b, type: 3}
+    - {fileID: 21300000, guid: 4d135bbad041bb8439ef141eb674b612, type: 3}
+    - {fileID: 21300000, guid: 7627220fc1e78d64ba7be1030e8ee396, type: 3}
+    - {fileID: 21300000, guid: 543c64e062d717d479c19395503dcc18, type: 3}
+    - {fileID: 21300000, guid: 500eb9211ae9ec74098ac36cf7b17a74, type: 3}
+    - {fileID: 21300000, guid: b399d04446af92a4b883ded0a9b9fac0, type: 3}
+    - {fileID: 21300000, guid: 490a6349b056d914b84b049705890900, type: 3}
     glow: {fileID: 21300000, guid: 7f2943836fcef8a4ab266fb980b4cc73, type: 3}
   body: {fileID: 6269305796092832524}
-  fire: {fileID: 4034516835418794777}
+  portal: {fileID: 4034516835418794777}
   glow: {fileID: 2601602140958088853}
-  fireFps: 8
+  portalFps: 10
+  poolCentre: {x: -4, y: -10}
 --- !u!61 &8992849187130447
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -320,7 +330,7 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0, y: 0}
+  m_Offset: {x: 0, y: -0.36}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
@@ -330,7 +340,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 1, y: 0.28}
   m_EdgeRadius: 0
 --- !u!1 &8517956698553629666
 GameObject:
@@ -343,7 +353,7 @@ GameObject:
   - component: {fileID: 7084155751806245905}
   - component: {fileID: 4034516835418794777}
   m_Layer: 0
-  m_Name: Fire
+  m_Name: Portal
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -411,9 +421,9 @@ SpriteRenderer:
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 2
+  m_SortingOrder: -1
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 21300000, guid: c99a165a60b487f47b744dfebdc72749, type: 3}
+  m_Sprite: {fileID: 21300000, guid: b311d00e7fcc4bd40a82f9adfe943cb2, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0

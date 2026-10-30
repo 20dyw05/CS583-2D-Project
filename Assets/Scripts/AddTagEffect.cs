@@ -8,4 +8,6 @@ public class AddTagEffect : CatalystEffect
     public override void Apply(Element element) {
         element.AddTag(tag);
     }
+
+    public override string Describe() => tag != null ? "Makes it " + tag.displayName + "." : "";
 }

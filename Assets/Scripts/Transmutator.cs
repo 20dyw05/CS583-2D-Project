@@ -1,6 +1,8 @@
 using UnityEngine;
 
-// Turns Elements into mana. Each stage pays out more, and looks grander.
+// Turns Elements into mana. A slab the size of a conveyor with a pool of mana on top: whatever
+// touches it, riding in from either side or falling from above, is pulled into the pool.
+// Each stage pays out more, and looks grander.
 public class Transmutator : PlacedItem
 {
     // One stage of the Transmutator: what it costs, how much it pays, and how it looks.
@@ -11,9 +13,10 @@ public class Transmutator : PlacedItem
         public double cost;
         [Tooltip("Mana for each point of an Element's value. 1 = the value as it is.")]
         public double payout;
+        [Tooltip("The slab.")]
         public Sprite body;
-        [Tooltip("The fire in the window, played in a loop.")]
-        public Sprite[] fire;
+        [Tooltip("The pool on top, played in a loop.")]
+        public Sprite[] portal;
         public Sprite glow;
     }
 
@@ -21,12 +24,14 @@ public class Transmutator : PlacedItem
 
     [Header("Art")]
     [SerializeField] SpriteRenderer body;
-    [SerializeField] SpriteRenderer fire;
+    [SerializeField] SpriteRenderer portal;
     [SerializeField] SpriteRenderer glow;
-    [SerializeField] float fireFps = 8f;
+    [SerializeField] float portalFps = 10f;
+    [Tooltip("The middle of the pool, in pixels from the tile's centre. Elements are pulled in here.")]
+    [SerializeField] Vector2 poolCentre = new Vector2(-4f, -10f);
 
     float flash;        // 1 right after an Element goes in, fading back to 0
-    float timeOffset;   // so two Transmutators don't flicker in step
+    float timeOffset;   // so two Transmutators don't swirl in step
 
     public override int StageCount => stages.Length;
     protected override double CostToReach(int stage) => stages[stage].cost;
@@ -45,17 +50,17 @@ public class Transmutator : PlacedItem
     protected override void OnLevelChanged()
     {
         body.sprite = stages[Level].body;
-        fire.sprite = stages[Level].fire[0];
+        portal.sprite = stages[Level].portal[0];
         glow.sprite = stages[Level].glow;
         flash = 1f;
     }
 
     void Update()
     {
-        // The fire loops through its frames.
-        Sprite[] frames = stages[Level].fire;
-        int frame = (int)((Time.time + timeOffset) * fireFps) % frames.Length;
-        fire.sprite = frames[frame];
+        // The pool loops through its frames.
+        Sprite[] frames = stages[Level].portal;
+        int frame = (int)((Time.time + timeOffset) * portalFps) % frames.Length;
+        portal.sprite = frames[frame];
 
         // The glow breathes, and flares when an Element goes in.
         flash = Mathf.MoveTowards(flash, 0f, Time.deltaTime * 3f);
@@ -64,10 +69,22 @@ public class Transmutator : PlacedItem
     }
 
     public override void OnElementEnter(Element element) {
-        double payout = stages[Level].payout;
-        ManaManager.Instance.Add(element.Value * payout * RebirthManager.Instance.IncomeMultiplier);
-        element.Dissolve();
+        if (element.Sinking) return; // already on its way in
+
+        double mana = element.Value * stages[Level].payout * RebirthManager.Instance.IncomeMultiplier;
+        ManaManager.Instance.Add(mana);
+
+        // Into the pool it goes, and what it was worth floats up out of it.
+        Vector3 pool = transform.position + (Vector3)(poolCentre / 50f) * grid.CellSize;
+        element.SinkInto(pool);
+        if (ManaPopups.Instance != null) ManaPopups.Instance.Show(pool, mana);
         flash = 1f;
     }
 
+    public override string Describe(int level)
+    {
+        double payout = stages[level].payout;
+        if (payout == 1) return "Turns Elements into mana.";
+        return "Turns Elements into mana, x" + payout.ToString("0.##") + " their value.";
+    }
 }

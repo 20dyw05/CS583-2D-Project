@@ -15,10 +15,28 @@ public class Element : MonoBehaviour
     Sprite normalSprite;
     float flash;
 
+    // Every Element in play. The value labels read this.
+    public static readonly List<Element> All = new List<Element>();
+
+    // Pulled into a Transmutator: sliding into its pool and shrinking away.
+    public bool Sinking { get; private set; }
+    Vector3 sinkFrom;
+    Vector3 sinkTo;
+    float sinkTime;
+    const float SinkDuration = 0.15f;
+
     void Awake() {
         sr = GetComponent<SpriteRenderer>();
         originalColor = sr.color;
         normalSprite = sr.sprite;
+    }
+
+    void OnEnable() {
+        All.Add(this);
+    }
+
+    void OnDisable() {
+        All.Remove(this);
     }
 
     // How many times each tag has been stamped on this Element.
@@ -74,7 +92,25 @@ public class Element : MonoBehaviour
         transform.position = position;
     }
 
+    // Stop being a physics object and slip into the pool at this point, then disappear.
+    public void SinkInto(Vector3 point) {
+        if (Sinking) return;
+        Sinking = true;
+        sinkFrom = transform.position;
+        sinkTo = point;
+        GetComponent<Collider2D>().enabled = false;
+        GetComponent<Rigidbody2D>().simulated = false;
+        Flash();
+    }
+
     void Update() {
+        if (Sinking) {
+            sinkTime += Time.deltaTime / SinkDuration;
+            transform.position = Vector3.Lerp(sinkFrom, sinkTo, sinkTime);
+            transform.localScale = Vector3.one * Mathf.Max(0f, 1f - sinkTime);
+            if (sinkTime >= 1f) Dissolve();
+        }
+
         Vector2Int cell = grid.WorldToGrid(transform.position);
 
         if(!grid.IsInside(cell)) {

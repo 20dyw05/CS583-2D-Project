@@ -12,4 +12,7 @@ public class MultiplyIfTagEffect : CatalystEffect
             element.Value *= factor;
         }
     }
+
+    public override string Describe() =>
+        "x" + factor.ToString("0.##") + " value if " + (requiredTag != null ? requiredTag.displayName : "tagged") + ".";
 }

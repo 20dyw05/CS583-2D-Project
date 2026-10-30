@@ -305,6 +305,7 @@ MonoBehaviour:
   price: 150
   buyable: 1
   rebirthTier: 0
+  icon: {fileID: 21300000, guid: 195bed11a4f9c3f4caea9ea7d6ea6594, type: 3}
   speed: 2
   effector: {fileID: 6227079531153130083}
   arrow: {fileID: 3711347476435547318}
@@ -319,21 +320,6 @@ MonoBehaviour:
     back: {fileID: 21300000, guid: 991cd45e2d21ec24ead839810d295f68, type: 3}
     front: {fileID: 21300000, guid: 7d40f567e09edcc40a1821faf057bb90, type: 3}
     field: {fileID: 21300000, guid: 013394a25fdbbc44eb347a0293853f07, type: 3}
-  - cost: 300
-    data: {fileID: 11400000, guid: 83507a2784045e843bac79a04afdfac8, type: 2}
-    back: {fileID: 21300000, guid: a1ccb728139ffd14e99d092528140eb6, type: 3}
-    front: {fileID: 21300000, guid: 949a6b82765a869428c667c3105e885e, type: 3}
-    field: {fileID: 21300000, guid: 6345fa42829316643aa108b9eca175ff, type: 3}
-  - cost: 600
-    data: {fileID: 11400000, guid: a0b7a1e7cd1c70a4799a50d8b09f51c5, type: 2}
-    back: {fileID: 21300000, guid: 869adbf0289ed5d4590f264f7417c4e0, type: 3}
-    front: {fileID: 21300000, guid: 71b210435eaa8e64a9d9f59d4439ff25, type: 3}
-    field: {fileID: 21300000, guid: 667239c49ed3d844c9efd581ae0c69aa, type: 3}
-  - cost: 1200
-    data: {fileID: 11400000, guid: b88ee2010ead7f74f8a4bdfffa9cc473, type: 2}
-    back: {fileID: 21300000, guid: 966d0ed3f9990f2459d0c2a17c40ed1c, type: 3}
-    front: {fileID: 21300000, guid: c117976bd37853f49a51d3b1180c4d9e, type: 3}
-    field: {fileID: 21300000, guid: f71f91657461ca64ca49578cc09d7a24, type: 3}
   archBack: {fileID: 4831036021061904598}
   archFront: {fileID: 3907157344899807977}
   field: {fileID: 4469020247569871485}

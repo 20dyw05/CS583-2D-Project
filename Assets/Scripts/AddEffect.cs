@@ -8,4 +8,6 @@ public class AddEffect : CatalystEffect
     public override void Apply(Element element) {
         element.Value += amount;
     }
+
+    public override string Describe() => "+" + amount.ToString("0.##") + " value.";
 }

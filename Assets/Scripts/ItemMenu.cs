@@ -3,7 +3,8 @@ using UnityEngine;
 using UnityEngine.UI;
 
 // The little window beside a selected item: its name and stage, then Upgrade, Move (R) and Stash (Z).
-// The buttons call back into the PlacementController, which does the work.
+// The buttons call back into the PlacementController, which does the work. The tooltip explaining
+// the item sits on its other side.
 public class ItemMenu : MonoBehaviour
 {
     [SerializeField] PlacementController placement;
@@ -47,6 +48,7 @@ public class ItemMenu : MonoBehaviour
     {
         item = null;
         panel.gameObject.SetActive(false);
+        if (ItemTooltip.Instance != null) ItemTooltip.Instance.HideSelected();
     }
 
     void LateUpdate()
@@ -68,7 +70,7 @@ public class ItemMenu : MonoBehaviour
 
         if (item.CanUpgrade)
         {
-            upgradeText.text = "Upgrade\n" + item.UpgradeCost.ToString("0.##") + " mana";
+            upgradeText.text = "Upgrade\n" + Format.Price(item.UpgradeCost);
             upgradeButton.interactable = ManaManager.Instance.Mana >= item.UpgradeCost;
         }
         else
@@ -79,6 +81,7 @@ public class ItemMenu : MonoBehaviour
     }
 
     // Sit beside the item: on its right, or on its left if there's no room.
+    // The tooltip goes on the other side.
     void Follow()
     {
         float scale = canvas.scaleFactor;
@@ -87,11 +90,16 @@ public class ItemMenu : MonoBehaviour
         Vector3 right = cam.WorldToScreenPoint(centre + new Vector3(0.6f, 0f, 0f));
         Vector3 left = cam.WorldToScreenPoint(centre - new Vector3(0.6f, 0f, 0f));
 
-        float x = right.x + size.x <= Screen.width ? right.x : left.x - size.x;
+        bool onRight = right.x + size.x <= Screen.width;
+        float x = onRight ? right.x : left.x - size.x;
         float y = right.y - size.y / 2f;
         y = Mathf.Clamp(y, bottomBarHeight * scale + 4f, Screen.height - size.y - 4f);
 
         // The panel's pivot is its bottom-left corner.
         panel.position = new Vector3(x, y, 0f);
+
+        if (ItemTooltip.Instance == null) return;
+        if (onRight) ItemTooltip.Instance.ShowSelected(item, left, new Vector2(x + size.x, left.y));
+        else ItemTooltip.Instance.ShowSelected(item, new Vector2(x, left.y), right);
     }
 }

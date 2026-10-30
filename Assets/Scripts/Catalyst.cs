@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 // A conveyor that also changes the Elements it carries.
@@ -90,5 +91,46 @@ public class Catalyst : Conveyor {
 
         element.Flash();
         flash = 1f;
+    }
+
+    // For the tooltip: what it does at a stage, one line per effect.
+    public override string Describe(int level) {
+        CatalystData data = stages[level].data;
+        List<string> lines = new List<string>();
+
+        foreach(CatalystEffect effect in data.effects) {
+            string line = effect.Describe();
+            if(line != "") lines.Add(line);
+        }
+
+        if(data.removesAllTags) {
+            lines.Add("Clears its tags, except permanent ones.");
+        } else {
+            foreach(ElementTag tag in data.removesTags) {
+                lines.Add("Removes " + tag.displayName + ".");
+            }
+        }
+
+        return string.Join("\n", lines);
+    }
+
+    // For the tooltip: the rules that stop it working.
+    public override string Limits(int level) {
+        CatalystData data = stages[level].data;
+        List<string> lines = new List<string>();
+
+        if(data.valueCap > 0) {
+            lines.Add("Only works on Elements worth less than " + Format.Number(data.valueCap) + ".");
+        }
+
+        if(data.tagLimit > 0 && data.addsTag != null) {
+            lines.Add(data.tagLimit == 1 ? "Works once per Element." : "Works up to " + data.tagLimit + " times per Element.");
+        }
+
+        foreach(ElementTag tag in data.blockedBy) {
+            lines.Add("Skips " + tag.displayName + " Elements.");
+        }
+
+        return string.Join("\n", lines);
     }
 }

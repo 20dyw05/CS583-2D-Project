@@ -1,17 +1,18 @@
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 
 // Everything the mouse does on the board:
-//   - empty tile: place the hotbar item (R flips it)
+//   - empty tile: place the item picked in the inventory (R flips it; Esc or right-click puts it away)
 //   - an item: a white box shows around it; click it for its menu (Upgrade, Move, Stash)
 //   - R moves the selected item, Z stashes it, right-click stashes whatever is under the mouse
 public class PlacementController : MonoBehaviour
 {
     [SerializeField] GridManager grid;
     [SerializeField] Camera cam;
-    [Tooltip("Every item in the game, in the order the hotbar shows them.")]
+    [Tooltip("Every item in the game, in the order the shop and inventory list them.")]
     [SerializeField] PlacedItem[] palette;
 
     [Header("Items on the board")]
@@ -19,8 +20,10 @@ public class PlacementController : MonoBehaviour
     [SerializeField] SpriteRenderer box;
     [Tooltip("The window with the Upgrade / Move / Stash buttons.")]
     [SerializeField] ItemMenu menu;
+    [Tooltip("The line in the bottom bar that says what you're placing.")]
+    [SerializeField] TMP_Text placingText;
 
-    PlacedItem selectedItem;   // the hotbar's pick (a prefab)
+    PlacedItem selectedItem;   // picked in the inventory (a prefab), or null
     Direction facing = Direction.Right;
 
     PlacedItem ghost;
@@ -38,7 +41,7 @@ public class PlacementController : MonoBehaviour
     public PlacedItem[] Palette => palette;
 
     // The items you own at least one of, in palette order.
-    public List<PlacedItem> HotbarItems
+    public List<PlacedItem> OwnedItems
     {
         get
         {
@@ -53,13 +56,15 @@ public class PlacementController : MonoBehaviour
 
     void Start()
     {
-        SelectSlot(0);
         RebirthManager.Instance.Reborn += OnReborn;
+        Inventory.Instance.Changed += OnInventoryChanged;
+        RefreshPlacingText();
     }
 
     void OnDestroy()
     {
         if (RebirthManager.Instance != null) RebirthManager.Instance.Reborn -= OnReborn;
+        if (Inventory.Instance != null) Inventory.Instance.Changed -= OnInventoryChanged;
     }
 
     void Update()
@@ -67,14 +72,6 @@ public class PlacementController : MonoBehaviour
         Keyboard kb = Keyboard.current;
         Mouse mouse = Mouse.current;
         if (kb == null || mouse == null) return;
-
-        // Number keys pick a hotbar slot.
-        if (kb.digit1Key.wasPressedThisFrame) SelectSlot(0);
-        if (kb.digit2Key.wasPressedThisFrame) SelectSlot(1);
-        if (kb.digit3Key.wasPressedThisFrame) SelectSlot(2);
-        if (kb.digit4Key.wasPressedThisFrame) SelectSlot(3);
-        if (kb.digit5Key.wasPressedThisFrame) SelectSlot(4);
-        if (kb.digit6Key.wasPressedThisFrame) SelectSlot(5);
 
         // Pixels -> world position -> tile.
         Vector2 screen = mouse.position.ReadValue();
@@ -107,6 +104,10 @@ public class PlacementController : MonoBehaviour
             facing = facing.Flip();
             ghost.PreviewFacing(facing);
         }
+        else if (kb.escapeKey.wasPressedThisFrame)
+        {
+            ClearSelection(); // put away what you were placing
+        }
 
         // The box goes around the selected item, or else whatever is under the mouse.
         ShowBox(selected != null ? selected : hovered);
@@ -120,21 +121,25 @@ public class PlacementController : MonoBehaviour
         {
             if (hovered != null) OpenMenu(hovered);   // click an item: its menu
             else if (selected != null) CloseMenu();   // click the floor: close the menu
-            else TryPlace(cell);                      // otherwise place the hotbar item
+            else TryPlace(cell);                      // otherwise place the picked item
         }
 
         if (mouse.rightButton.wasPressedThisFrame)
         {
             if (hovered != null) StashItem(hovered);
-            else CloseMenu();
+            else if (selected != null) CloseMenu();
+            else ClearSelection();
         }
     }
 
     void TryPlace(Vector2Int cell)
     {
+        // Hold on to it: taking the last one out of the inventory clears the selection.
+        PlacedItem item = selectedItem;
+        if (item == null) return;                                  // nothing picked
         if (!grid.CanPlace(cell)) return;                          // board says no
-        if (!Inventory.Instance.TryTake(selectedItem)) return;     // none left
-        grid.Place(selectedItem, cell, facing);
+        if (!Inventory.Instance.TryTake(item)) return;             // none left
+        grid.Place(item, cell, facing);
     }
 
     // ---------------- The item menu ----------------
@@ -184,6 +189,7 @@ public class PlacementController : MonoBehaviour
         grid.Remove(selected.Cell);
         CloseMenu();
         MakeGhost(carried, carriedFacing, carriedLevel);
+        RefreshPlacingText();
     }
 
     void UpdateMove(Keyboard kb, Mouse mouse, Vector2Int cell, bool overUI)
@@ -217,9 +223,10 @@ public class PlacementController : MonoBehaviour
         if (item != null) item.SetLevel(carriedLevel);
         carried = null;
 
-        // Back to the hotbar item.
+        // Back to whatever was picked in the inventory.
         if (selectedItem != null) MakeGhost(selectedItem, facing, 0);
         else ClearGhost();
+        RefreshPlacingText();
     }
 
     // A Rebirth while carrying something: it goes the same way as the rest of the board.
@@ -233,6 +240,7 @@ public class PlacementController : MonoBehaviour
             else ClearGhost();
         }
         CloseMenu();
+        RefreshPlacingText();
     }
 
     void ShowBox(PlacedItem item)
@@ -245,20 +253,48 @@ public class PlacementController : MonoBehaviour
         box.color = new Color(1f, 1f, 1f, item == selected ? 1f : 0.75f);
     }
 
-    // ---------------- The hotbar and the ghost ----------------
+    // ---------------- Placing and the ghost ----------------
 
-    // Select whatever is in this hotbar slot, if anything.
-    void SelectSlot(int slot)
-    {
-        List<PlacedItem> items = HotbarItems;
-        if (slot < items.Count) Select(items[slot]);
-    }
-
-    // Switch to a different item and rebuild the ghost.
+    // Pick an item to place (the inventory calls this) and rebuild the ghost.
     public void Select(PlacedItem item)
     {
         selectedItem = item;
         if (carried == null) MakeGhost(item, facing, 0);
+        RefreshPlacingText();
+    }
+
+    // Stop placing.
+    public void ClearSelection()
+    {
+        selectedItem = null;
+        if (carried == null) ClearGhost();
+        RefreshPlacingText();
+    }
+
+    // The last one was placed (or a Rebirth took them): nothing left to place.
+    void OnInventoryChanged()
+    {
+        if (selectedItem != null && Inventory.Instance.Count(selectedItem) <= 0) ClearSelection();
+        else RefreshPlacingText();
+    }
+
+    void RefreshPlacingText()
+    {
+        if (placingText == null) return;
+
+        if (carried != null)
+        {
+            placingText.text = "Moving " + carried.DisplayName + "     R: turn   Esc: put back";
+        }
+        else if (selectedItem != null)
+        {
+            placingText.text = "Placing " + selectedItem.DisplayName + " (" + Inventory.Instance.Count(selectedItem) + " left)" +
+                "     R: turn   Esc: stop";
+        }
+        else
+        {
+            placingText.text = "";
+        }
     }
 
     void MakeGhost(PlacedItem item, Direction dir, int level)

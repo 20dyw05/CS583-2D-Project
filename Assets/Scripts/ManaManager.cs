@@ -26,9 +26,10 @@ public class ManaManager : MonoBehaviour
         Refresh();
     }
 
+    // Just the number: the gold mana symbol sits next to it.
     void Refresh()
     {
-        manaText.text = Mana.ToString("0.##") + " mana";
+        manaText.text = Format.Number(Mana);
     }
 
     // Spend the amount if there's enough. Returns whether it worked.
