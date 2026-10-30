@@ -1,0 +1,24 @@
+(CS 583) 2D Game Project
+
+Differences from Write-up:
+
+Mechanics
+- Freebuilding instead of a fixed line, with a board size of 11x6 instead of 5x4
+- Side, oblique-ish view instead of a complete side view
+- “Esc” is now used to cancel an action, like placing, or close a window, instead of pausing the game
+- No sell or general menu
+- Added upgrades, which happen in place on a select few items instead of shop upgraders where each stage would instead need to be purchased. This goes for the base Condenser, Transmutator, and most shop Catalysts.
+- Rebirths also give a base income boost, and more rewards per rebirth after hitting milestones (multiples of 5)
+
+Visuals
+- Background art that changes per rebirth to show time progression
+- A lot more items than expected with the power of Claude
+
+Audio
+- No sounds for things that happen to every Element (Condenser drops, Catalyst ticks, status changes, Transmutator sales). In an incremental game these fire constantly, so they became an endless loop of noise.
+- More sfx in the UI elements, Rebirthing, upgrade, rewards, and others
+
+AI-Usage:
+It played a massive role in everything, but I am also confident in my understanding of what’s under the hood (despite it having rewritten parts that I wrote). Many, many back-and-forths with it and finding reference images had to happen to get to the current stage, and even then there are still a lot of visual elements that feel pretty disjointed. I had AI create the visuals and audio on top of my own setup, which already had a lot of the mechanisms working, and it played a key role in all steps of the way, especially in brainstorming more mechanics which I wasn’t sure how to implement and thus had it do so.
+
+So TL;DR, AI was used in brainstorming, guiding my implementations, audio and visual ideation and generation (using Python), and feature implementation beyond what I did. Commits on GitHub should show pretty clearly where Claude became more hands-on.
