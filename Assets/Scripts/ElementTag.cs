@@ -20,4 +20,10 @@ public class ElementTag : ScriptableObject
     public Sprite look;
     [Tooltip("The brighter frame of the look, for the moment a Catalyst works on it.")]
     public Sprite lookFlash;
+
+    [Header("Optional: sounds (for statuses)")]
+    [Tooltip("Played when a Catalyst puts this tag on an Element (a whoosh of flame for Burning).")]
+    public AudioClip sound;
+    [Tooltip("Played when a Catalyst takes it off again (the hiss of a Quencher putting out Burning).")]
+    public AudioClip soundWhenRemoved;
 }

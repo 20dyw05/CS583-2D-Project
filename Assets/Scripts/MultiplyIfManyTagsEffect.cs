@@ -18,6 +18,6 @@ public class MultiplyIfManyTagsEffect : CatalystEffect
 
     public override string Describe()
     {
-        return "x" + Num(factor) + " value if it has " + minTags + " or more different tags.";
+        return "x" + Num(factor) + " value if it has picked up " + minTags + " or more different upgraders and statuses.";
     }
 }

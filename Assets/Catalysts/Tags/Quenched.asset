@@ -13,6 +13,10 @@ MonoBehaviour:
   m_Name: Quenched
   m_EditorClassIdentifier: Assembly-CSharp::ElementTag
   displayName: Quenched
-  permanent: 1
+  permanent: 0
   tintsElement: 0
   tint: {r: 1, g: 1, b: 1, a: 1}
+  look: {fileID: 0}
+  lookFlash: {fileID: 0}
+  sound: {fileID: 0}
+  soundWhenRemoved: {fileID: 0}

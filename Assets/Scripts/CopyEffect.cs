@@ -17,6 +17,6 @@ public class CopyEffect : CatalystEffect
     public override string Describe()
     {
         int percent = Mathf.RoundToInt(chance * 100f);
-        return percent + "% chance to copy it. The copy keeps its value and tags.";
+        return percent + "% chance to copy it. The copy is identical, value and all.";
     }
 }

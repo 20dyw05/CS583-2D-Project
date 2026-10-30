@@ -119,6 +119,10 @@ public class Catalyst : Conveyor
         {
             foreach (ElementTag tag in data.removesTags)
             {
+                if (element.HasTag(tag) && AudioManager.Instance != null)
+                {
+                    AudioManager.Instance.PlayStatusRemoved(tag); // the Quencher's hiss
+                }
                 element.RemoveTag(tag);
             }
         }
@@ -128,6 +132,12 @@ public class Catalyst : Conveyor
 
         element.Flash();
         flash = 1f;
+
+        // A tink, higher the more the Element is now worth.
+        if (AudioManager.Instance != null)
+        {
+            AudioManager.Instance.PlayCatalyst(element.Value);
+        }
     }
 
     // The rules that stop a Catalyst working: a value cap, a limit on how often, and blocking tags.
@@ -169,9 +179,10 @@ public class Catalyst : Conveyor
             }
         }
 
+        // Players never see the word "tag": to them, upgraders just work again, and statuses wear off.
         if (data.removesAllTags)
         {
-            lines.Add("Clears its tags, except permanent ones.");
+            lines.Add("Lets most upgraders work on it again, and clears its statuses.");
         }
         else
         {

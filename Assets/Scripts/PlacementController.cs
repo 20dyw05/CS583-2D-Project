@@ -236,6 +236,15 @@ public class PlacementController : MonoBehaviour
 
         PlacedItem placed = grid.Place(item, cell, facing);
         placed.PlacedFree = free;
+        PlayPlaceSound();
+    }
+
+    void PlayPlaceSound()
+    {
+        if (AudioManager.Instance != null)
+        {
+            AudioManager.Instance.PlayPlace();
+        }
     }
 
     // ---------------- The item menu ----------------
@@ -252,12 +261,26 @@ public class PlacementController : MonoBehaviour
         menu.Hide();
     }
 
-    // Menu button: spend mana for the next stage.
+    // Menu button: spend mana for the next stage. (While you can't afford it the button is greyed
+    // out, and its CantAffordSound plays the "can't afford" sound instead.)
     public void Upgrade()
     {
-        if (selected != null)
+        if (selected == null)
         {
-            selected.TryUpgrade();
+            return;
+        }
+
+        bool upgraded = selected.TryUpgrade();
+        if (AudioManager.Instance != null)
+        {
+            if (upgraded)
+            {
+                AudioManager.Instance.PlayUpgrade();
+            }
+            else
+            {
+                AudioManager.Instance.PlayCantAfford();
+            }
         }
     }
 
@@ -285,6 +308,11 @@ public class PlacementController : MonoBehaviour
             Inventory.Instance.Add(item.SourcePrefab);
         }
         grid.Remove(item.Cell);
+
+        if (AudioManager.Instance != null)
+        {
+            AudioManager.Instance.PlayStash();
+        }
     }
 
     // Menu button (or R): pick the item up. It follows the mouse until you click an empty tile.
@@ -344,6 +372,7 @@ public class PlacementController : MonoBehaviour
             item.SetLevel(carried.level);
             item.ManaSpentOnUpgrades = carried.manaSpent;
             item.PlacedFree = carried.placedFree;
+            PlayPlaceSound();
         }
         isCarrying = false;
 

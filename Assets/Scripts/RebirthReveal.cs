@@ -61,6 +61,11 @@ public class RebirthReveal : MonoBehaviour
     // Fade the screen to white. The board is cleared while it's covered.
     public IEnumerator FlashIn()
     {
+        if (AudioManager.Instance != null)
+        {
+            AudioManager.Instance.PlayRebirth();
+        }
+
         flash.gameObject.SetActive(true);
         for (float t = 0f; t < flashIn; t += Time.unscaledDeltaTime)
         {
@@ -145,10 +150,16 @@ public class RebirthReveal : MonoBehaviour
         collectButton.interactable = true;
     }
 
-    // A reward finished spinning. An Epic or Legendary one lights up the whole screen in its colour.
+    // A reward finished spinning. It plays its rarity's sound, and an Epic or Legendary one lights up
+    // the whole screen in its colour.
     void OnRewardLanded(Rarity rarity)
     {
         rewardsLanded++;
+
+        if (AudioManager.Instance != null)
+        {
+            AudioManager.Instance.PlayRewardLanded(rarity);
+        }
 
         if (rarity < Rarity.Epic)
         {
@@ -190,6 +201,11 @@ public class RebirthReveal : MonoBehaviour
     // Close the window and let the game run again.
     void Collect()
     {
+        if (AudioManager.Instance != null)
+        {
+            AudioManager.Instance.PlayCollect();
+        }
+
         if (colorPulse != null)
         {
             StopCoroutine(colorPulse);

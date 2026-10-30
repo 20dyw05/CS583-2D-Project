@@ -89,6 +89,10 @@ public class Condenser : PlacedItem
         element.AddTag(dropTag);
 
         animator.SetTrigger("Drop"); // plays the shimmer
+        if (AudioManager.Instance != null)
+        {
+            AudioManager.Instance.PlayDrop();
+        }
     }
 
     public override string Describe(int level)

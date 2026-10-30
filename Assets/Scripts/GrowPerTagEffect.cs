@@ -22,6 +22,6 @@ public class GrowPerTagEffect : CatalystEffect
 
     public override string Describe()
     {
-        return "x1, plus " + Num(perTag) + " for every different tag it has (up to x" + Num(max) + ").";
+        return "x1, plus " + Num(perTag) + " for every different upgrader and status it has picked up (up to x" + Num(max) + ").";
     }
 }

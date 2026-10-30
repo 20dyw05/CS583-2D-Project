@@ -51,7 +51,8 @@ public class RebirthManager : MonoBehaviour
     // Fired after every Rebirth. The background and the placement controller listen to this.
     public event System.Action Reborn;
 
-    bool rebirthing; // between pressing the button and the board being cleared
+    bool rebirthing;   // between pressing the button and the board being cleared
+    bool couldAfford;  // could the player afford the next Rebirth last frame? (for the chime)
 
     void Awake()
     {
@@ -66,6 +67,7 @@ public class RebirthManager : MonoBehaviour
             GodMode.Instance.Changed += RefreshText;
         }
         RefreshText();
+        couldAfford = ManaManager.Instance.CanAfford(Cost); // no chime for what you could already afford
     }
 
     void OnDestroy()
@@ -79,7 +81,15 @@ public class RebirthManager : MonoBehaviour
     void Update()
     {
         // The button can only be clicked once you can afford it.
-        rebirthButton.interactable = !rebirthing && ManaManager.Instance.CanAfford(Cost);
+        bool canAfford = ManaManager.Instance.CanAfford(Cost);
+        rebirthButton.interactable = !rebirthing && canAfford;
+
+        // A chime the moment you can first afford it.
+        if (canAfford && !couldAfford && !rebirthing && AudioManager.Instance != null)
+        {
+            AudioManager.Instance.PlayRebirthReady();
+        }
+        couldAfford = canAfford;
     }
 
     public void Rebirth()

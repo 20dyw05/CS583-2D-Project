@@ -17,6 +17,6 @@ public class MultiplyIfUntouchedEffect : CatalystEffect
 
     public override string Describe()
     {
-        return "x" + Num(factor) + " value if it has no tags yet.";
+        return "x" + Num(factor) + " value if no upgrader has touched it yet and it has no status.";
     }
 }

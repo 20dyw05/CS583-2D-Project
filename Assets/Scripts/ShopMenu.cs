@@ -113,11 +113,26 @@ public class ShopMenu : MonoBehaviour
         panel.SetActive(false);
     }
 
+    // (A card you can't afford is greyed out, so its click never gets here. Its CantAffordSound
+    // plays the "can't afford" sound instead.)
     void Buy(PlacedItem item)
     {
-        if (ManaManager.Instance.TrySpend(item.Price))
+        bool bought = ManaManager.Instance.TrySpend(item.Price);
+        if (bought)
         {
             Inventory.Instance.Add(item);
+        }
+
+        if (AudioManager.Instance != null)
+        {
+            if (bought)
+            {
+                AudioManager.Instance.PlayBuy();
+            }
+            else
+            {
+                AudioManager.Instance.PlayCantAfford();
+            }
         }
     }
 

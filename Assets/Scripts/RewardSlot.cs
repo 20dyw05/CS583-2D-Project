@@ -98,6 +98,10 @@ public class RewardSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
                 icon.sprite = reel[index % reel.Count];
                 index++;
                 tick = 1f;
+                if (AudioManager.Instance != null)
+                {
+                    AudioManager.Instance.PlayReelTick();
+                }
 
                 // The gap between pictures grows from 0.05 to 0.3 seconds as the spin goes on.
                 float progress = time / duration;

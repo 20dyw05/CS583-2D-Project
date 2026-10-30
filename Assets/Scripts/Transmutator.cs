@@ -106,6 +106,12 @@ public class Transmutator : PlacedItem
             ManaPopups.Instance.Show(pool, mana);
         }
         flash = 1f;
+
+        // A ding, higher the more it paid.
+        if (AudioManager.Instance != null)
+        {
+            AudioManager.Instance.PlayTransmute(mana);
+        }
     }
 
     public override string Describe(int level)

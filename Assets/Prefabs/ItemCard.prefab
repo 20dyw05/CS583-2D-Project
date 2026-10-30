@@ -150,6 +150,7 @@ GameObject:
   - component: {fileID: 8179744691633596896}
   - component: {fileID: 373775065301389129}
   - component: {fileID: 6535914897859765095}
+  - component: {fileID: 2481028821034058747}
   m_Layer: 5
   m_Name: ItemCard
   m_TagString: Untagged
@@ -277,6 +278,18 @@ MonoBehaviour:
   icon: {fileID: 3776337166790654538}
   nameText: {fileID: 8665895915988453815}
   detailText: {fileID: 828979798080041909}
+--- !u!114 &2481028821034058747
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6164078795313568924}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e585bc14dfe7a0048966fb001dfdde20, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CantAffordSound
 --- !u!1 &8294342261711863610
 GameObject:
   m_ObjectHideFlags: 0
